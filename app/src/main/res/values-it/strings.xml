@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PersonalCodex</string>
+
+    <string name="menu_new">Nuovo</string>
+    <string name="menu_receive">Ricevi</string>
+    <string name="menu_templates">Template</string>
+
+    <string name="title_templates">Seleziona Template</string>
+    <string name="title_template">Nuovo Template</string>
+
+    <string name="remove_section">rimuovi sezione</string>
+</resources>

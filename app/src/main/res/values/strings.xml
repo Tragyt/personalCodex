@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PersonalCodex</string>
+
+    <string name="menu_new">New</string>
+    <string name="menu_receive">Receive</string>
+    <string name="menu_templates">Templates</string>
+
+    <string name="title_templates">Select Template</string>
+    <string name="title_template">New Template</string>
+
+    <string name="remove_section">remove section</string>
+</resources>
