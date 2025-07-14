@@ -3,7 +3,6 @@ package programmazionemobile.esercizi.personalcodex;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -81,15 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
         MyDatabase db = MyDatabase.getInstance(context);
         CampaignsDAO dao = db.campaignsDAO();
-        FutureTask<List<FD01_CAMPAIGNS>> task = new FutureTask<List<FD01_CAMPAIGNS>>(new Callable<List<FD01_CAMPAIGNS>>() {
-            @Override
-            public List<FD01_CAMPAIGNS> call() throws Exception {
-                return dao.getAll();
-            }
-        });
+        FutureTask<List<FD01_CAMPAIGNS>> task = new FutureTask<>(dao::getAll);
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
-        FD01_CAMPAIGNS[] array = null;
+        FD01_CAMPAIGNS[] array;
         try {
             array = task.get().toArray(new FD01_CAMPAIGNS[0]);
         } catch (ExecutionException | InterruptedException e) {

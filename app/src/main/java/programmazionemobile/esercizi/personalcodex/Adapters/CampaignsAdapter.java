@@ -3,7 +3,6 @@ package programmazionemobile.esercizi.personalcodex.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAI
 import programmazionemobile.esercizi.personalcodex.R;
 
 public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.ViewHolder> {
-    private FD01_CAMPAIGNS[] dataSet;
+    private final FD01_CAMPAIGNS[] dataSet;
 
     public CampaignsAdapter(FD01_CAMPAIGNS[] data) {
         dataSet = data;
@@ -34,7 +33,7 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CardView view = holder.getCardView();
         ((TextView) view.findViewById(R.id.txtCampaign)).setText(dataSet[position].FD01_NAME);
-        ((ImageButton) view.findViewById(R.id.btnInfoCampaign)).setOnClickListener(v -> {
+        view.findViewById(R.id.btnInfoCampaign).setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), v);
             popupMenu.getMenuInflater().inflate(R.menu.item_options, popupMenu.getMenu());
             popupMenu.show();

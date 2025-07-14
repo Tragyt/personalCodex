@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <EditText
         android:id="@+id/txtTemplateSection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
+        android:importantForAutofill="no"
         android:textColor="@color/white"
-        tools:ignore="RelativeOverlap"
+        tools:ignore="LabelFor,RelativeOverlap,TextFields"
         android:textSize="24sp"
         android:padding="16dp"/>
     

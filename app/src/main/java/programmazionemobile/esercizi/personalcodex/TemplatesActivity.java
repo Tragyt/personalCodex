@@ -46,9 +46,7 @@ public class TemplatesActivity extends AppCompatActivity {
 
         CaricaTemplates();
 
-        findViewById(R.id.btnBackTemplates).setOnClickListener(view -> {
-            super.finish();
-        });
+        findViewById(R.id.btnBackTemplates).setOnClickListener(view -> super.finish());
     }
 
     private void CaricaTemplates() {
@@ -60,7 +58,7 @@ public class TemplatesActivity extends AppCompatActivity {
             lst.add(new TP01_TEMPLATES("Empty", -1));
         TP01_TEMPLATES[] array = lst.toArray(new TP01_TEMPLATES[0]);
 
-        TemplatesAdapter adapter = new TemplatesAdapter(array, activityResultLauncher);
+        TemplatesAdapter adapter = new TemplatesAdapter(array, activityResultLauncher, role);
         RecyclerView recyclerView = findViewById(R.id.rcvTemplates);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

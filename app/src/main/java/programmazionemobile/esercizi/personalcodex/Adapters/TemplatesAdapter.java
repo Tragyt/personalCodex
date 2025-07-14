@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import programmazionemobile.esercizi.personalcodex.Database.Entities.TP01_TEMPLATES;
+import programmazionemobile.esercizi.personalcodex.Helpers.TemplatesHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 import programmazionemobile.esercizi.personalcodex.TemplateActivity;
 
@@ -20,10 +21,12 @@ public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.View
 
     private final TP01_TEMPLATES[] templates;
     private final ActivityResultLauncher<Intent> activityResultLauncher;
+    private TemplatesHelper.TemplatesRoles role;
 
-    public TemplatesAdapter(TP01_TEMPLATES[] templates, ActivityResultLauncher<Intent> activityResultLauncher) {
+    public TemplatesAdapter(TP01_TEMPLATES[] templates, ActivityResultLauncher<Intent> activityResultLauncher, TemplatesHelper.TemplatesRoles role) {
         this.templates = templates;
         this.activityResultLauncher = activityResultLauncher;
+        this.role = role;
     }
 
     @NonNull
@@ -42,9 +45,15 @@ public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.View
 
         view.setOnClickListener(view1 -> {
             Context context = holder.getCardView().getContext();
-            Intent i = new Intent(context, TemplateActivity.class);
-            i.putExtra("template", templates[position]);
-            this.activityResultLauncher.launch(i);
+
+            if(role == TemplatesHelper.TemplatesRoles.OPTIONS){
+                Intent i = new Intent(context, TemplateActivity.class);
+                i.putExtra("template", templates[position]);
+                this.activityResultLauncher.launch(i);
+            }
+            else if(role == TemplatesHelper.TemplatesRoles.NEW_CAMPAIGN){
+                // INSERIRE INTENT PER CAMPAIGN ACTIVITY
+            }
         });
     }
 

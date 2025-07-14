@@ -1,6 +1,5 @@
 package programmazionemobile.esercizi.personalcodex;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,9 +12,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.TemplateSectionsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.SectionAccess;
@@ -27,10 +23,9 @@ import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 
 public class TemplateActivity extends AppCompatActivity {
 
-    private static SectionAccess sectionAccess;
-    private static TemplateSectionsAdapter adapter;
-    private static ArrayList<TP02_SECTIONS> sections;
-    private static ListView lstTemplateSections;
+    private SectionAccess sectionAccess;
+    private TemplateSectionsAdapter adapter;
+    private ArrayList<TP02_SECTIONS> sections;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,15 +42,14 @@ public class TemplateActivity extends AppCompatActivity {
 
             sectionAccess = new SectionAccess(dao);
             sections = sectionAccess.getAll(template.ID);
-            adapter = new TemplateSectionsAdapter(this, sections);
-            lstTemplateSections = findViewById(R.id.lstTemplateSections);
+            adapter = new TemplateSectionsAdapter(this, sections, sectionAccess);
+            ListView lstTemplateSections = findViewById(R.id.lstTemplateSections);
             lstTemplateSections.setAdapter(adapter);
 
             View footerButton = getLayoutInflater().inflate(R.layout.footer_button_add, null);
             lstTemplateSections.addFooterView(footerButton);
             footerButton.findViewById(R.id.btnAddSection).setOnClickListener(view -> {
                 TP02_SECTIONS section = new TP02_SECTIONS(getString(R.string.new_section), template.ID);
-                //List<TP02_SECTIONS> aggiornate = ;
                 runOnUiThread(() -> {
                     sections.clear();
                     sections.addAll(sectionAccess.insertAndGetAll(section));
@@ -96,12 +90,5 @@ public class TemplateActivity extends AppCompatActivity {
             setResult(RESULT_CANCELED);
             finish();
         }
-    }
-
-    public static void deleteSection(TP02_SECTIONS section) {
-        sectionAccess.delete(section);
-        sections = sectionAccess.getAll(section.TP02_TEMPLATE_TP01);
-        adapter = new TemplateSectionsAdapter(adapter.getContext(), sections);
-        lstTemplateSections.setAdapter(adapter);
     }
 }

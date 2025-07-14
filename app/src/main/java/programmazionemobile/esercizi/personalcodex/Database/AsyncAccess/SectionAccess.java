@@ -2,10 +2,8 @@ package programmazionemobile.esercizi.personalcodex.Database.AsyncAccess;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
@@ -66,5 +64,14 @@ public class SectionAccess {
         }
 
         return ret;
+    }
+
+    public void update(TP02_SECTIONS section){
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.update(section);
+            return null;
+        });
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
     }
 }
