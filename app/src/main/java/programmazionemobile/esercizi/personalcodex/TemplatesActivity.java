@@ -84,7 +84,7 @@ public class TemplatesActivity extends AppCompatActivity {
         findViewById(R.id.txtTitleTemplates).setVisibility(TextView.INVISIBLE);
 
         Context context = this;
-        ImageButton btnNew = (ImageButton) findViewById(R.id.btnNewTemplate);
+        ImageButton btnNew = findViewById(R.id.btnNewTemplate);
         btnNew.setVisibility(Button.VISIBLE);
         btnNew.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(this, view);
@@ -94,7 +94,7 @@ public class TemplatesActivity extends AppCompatActivity {
                 int item = menuItem.getItemId();
                 if (item == R.id.itmNew) {
                     TP01_TEMPLATES template = new TP01_TEMPLATES(getResources().getString(R.string.title_template));
-                    templateAccess.insert(template);
+                    template.ID = templateAccess.insert(template);
                     Intent i = new Intent(context, TemplateActivity.class);
                     i.putExtra("template", template);
                     activityResultLauncher.launch(i);

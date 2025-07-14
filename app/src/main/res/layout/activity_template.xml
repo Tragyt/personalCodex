@@ -32,12 +32,13 @@
     <EditText
         android:id="@+id/editTemplatename"
         android:layout_width="384dp"
-        android:layout_height="48dp"
+        android:layout_height="60dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="15dp"
         android:ems="10"
         android:inputType="text"
+        android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,5 +57,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTemplatename"
-        app:layout_constraintVertical_bias="0.261" />
+        app:layout_constraintVertical_bias="0.261" >
+
+    </ListView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,11 +6,13 @@
 
     <TextView
         android:id="@+id/txtTemplateSection"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:textColor="@color/white"
-        tools:ignore="RelativeOverlap" />
+        tools:ignore="RelativeOverlap"
+        android:textSize="24sp"
+        android:padding="16dp"/>
     
     <ImageView
         android:layout_width="22sp"

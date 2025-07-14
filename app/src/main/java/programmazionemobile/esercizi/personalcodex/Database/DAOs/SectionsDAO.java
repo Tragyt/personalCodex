@@ -22,5 +22,5 @@ public interface SectionsDAO {
     void update(TP02_SECTIONS section);
 
     @Query("SELECT * FROM TP02_SECTIONS WHERE TP02_TEMPLATE_TP01 = :idTemplate")
-    List<TP02_SECTIONS> getAll(int idTemplate);
+    List<TP02_SECTIONS> getAll(long idTemplate);
 }

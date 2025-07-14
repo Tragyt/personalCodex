@@ -18,9 +18,9 @@ public class TP02_SECTIONS {
     public String TP02_NAME;
 
     @ColumnInfo(name = "TP02_TEMPLATE_TP01")
-    public int TP02_TEMPLATE_TP01;
+    public long TP02_TEMPLATE_TP01;
 
-    public TP02_SECTIONS(String TP02_NAME, int TP02_TEMPLATE_TP01) {
+    public TP02_SECTIONS(String TP02_NAME, long TP02_TEMPLATE_TP01) {
         this.TP02_NAME = TP02_NAME;
         this.TP02_TEMPLATE_TP01 = TP02_TEMPLATE_TP01;
     }

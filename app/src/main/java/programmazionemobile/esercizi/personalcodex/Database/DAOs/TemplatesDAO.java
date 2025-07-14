@@ -13,7 +13,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.TP01_TEMPLA
 @Dao
 public interface TemplatesDAO {
     @Insert
-    void insert(TP01_TEMPLATES template);
+    long insert(TP01_TEMPLATES template);
 
     @Delete
     void delete(TP01_TEMPLATES template);

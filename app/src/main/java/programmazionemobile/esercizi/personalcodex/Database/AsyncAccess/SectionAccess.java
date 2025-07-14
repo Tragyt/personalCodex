@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
@@ -18,18 +19,13 @@ public class SectionAccess {
         this.dao = dao;
     }
 
-    public ArrayList<TP02_SECTIONS> getAll(int idTemplate){
-        FutureTask<List<TP02_SECTIONS>> task = new FutureTask<List<TP02_SECTIONS>>(new Callable<List<TP02_SECTIONS>>() {
-            @Override
-            public List<TP02_SECTIONS> call() throws Exception {
-                return dao.getAll(idTemplate);
-            }
-        });
+    public ArrayList<TP02_SECTIONS> getAll(long idTemplate){
+        FutureTask<List<TP02_SECTIONS>> task = new FutureTask<>(() -> dao.getAll(idTemplate));
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
-        ArrayList<TP02_SECTIONS> ret = null;
+        ArrayList<TP02_SECTIONS> ret;
         try {
-            ret = new ArrayList<TP02_SECTIONS>(task.get());
+            ret = new ArrayList<>(task.get());
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -38,14 +34,37 @@ public class SectionAccess {
     }
 
     public void delete(TP02_SECTIONS section){
-        FutureTask task = new FutureTask(new Callable() {
-            @Override
-            public Object call() throws Exception {
-                dao.delete(section);
-                return null;
-            }
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.delete(section);
+            return null;
         });
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
+    }
+
+    public void insert(TP02_SECTIONS section){
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.insert(section);
+            return null;
+        });
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+    }
+
+    public ArrayList<TP02_SECTIONS> insertAndGetAll(TP02_SECTIONS section){
+        FutureTask<List<TP02_SECTIONS>> task = new FutureTask<>(() -> {
+            dao.insert(section);
+            return dao.getAll(section.TP02_TEMPLATE_TP01);
+        });
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+        ArrayList<TP02_SECTIONS> ret;
+        try {
+            ret = new ArrayList<>(task.get());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
     }
 }

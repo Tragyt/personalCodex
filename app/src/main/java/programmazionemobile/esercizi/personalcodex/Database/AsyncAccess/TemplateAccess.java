@@ -1,7 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Database.AsyncAccess;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -18,12 +17,7 @@ public class TemplateAccess {
     }
 
     public List<TP01_TEMPLATES> getAll(){
-        FutureTask<List<TP01_TEMPLATES>> task = new FutureTask<List<TP01_TEMPLATES>>(new Callable<List<TP01_TEMPLATES>>() {
-            @Override
-            public List<TP01_TEMPLATES> call() throws Exception {
-                return dao.getAll();
-            }
-        });
+        FutureTask<List<TP01_TEMPLATES>> task = new FutureTask<List<TP01_TEMPLATES>>(() -> dao.getAll());
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
@@ -36,26 +30,37 @@ public class TemplateAccess {
         return ret;
     }
 
-    public void insert(TP01_TEMPLATES template){
-        FutureTask task = new FutureTask(new Callable() {
-            @Override
-            public Object call() throws Exception {
-                dao.insert(template);
-                return null;
-            }
+    public long insert(TP01_TEMPLATES template){
+        FutureTask<Long> task = new FutureTask<Long>(() -> {
+            return dao.insert(template);
+        });
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+
+        long ret = 0;
+        try {
+            ret = task.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ret;
+    }
+
+    public void delete(TP01_TEMPLATES template){
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.delete(template);
+            return null;
         });
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
     }
 
-    public void delete(TP01_TEMPLATES template){
-        FutureTask task = new FutureTask(new Callable() {
-            @Override
-            public Object call() throws Exception {
-                dao.delete(template);
-                return null;
-            }
+    public void update(TP01_TEMPLATES template){
+        FutureTask<?> task = new FutureTask<>(()->{
+            dao.update(template);
+            return null;
         });
 
         Executor executor = Executors.newSingleThreadExecutor();

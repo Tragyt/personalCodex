@@ -11,7 +11,7 @@ public class TP01_TEMPLATES implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
-    public int ID;
+    public long ID;
 
     @ColumnInfo(name = "TP01_NAME")
     public String TP01_NAME;

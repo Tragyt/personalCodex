@@ -9,4 +9,5 @@
     <string name="title_template">New Template</string>
 
     <string name="remove_section">remove section</string>
+    <string name="new_section">New Section</string>
 </resources>
