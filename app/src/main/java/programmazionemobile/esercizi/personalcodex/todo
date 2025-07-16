@@ -1,0 +1,6 @@
+- in campagne mostrare sezioni ed elementi con ExpandableListView
+    -   se tenuto premuto mostrare dialog dove cambiare nome o eliminare
+
+
+extra:
+    -   generazione immagini con IA per da descrizione

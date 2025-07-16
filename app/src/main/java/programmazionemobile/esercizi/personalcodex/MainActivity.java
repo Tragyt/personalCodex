@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignsAdapter;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
@@ -79,16 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
         MyDatabase db = MyDatabase.getInstance(context);
         CampaignsDAO dao = db.campaignsDAO();
-        FutureTask<List<FD01_CAMPAIGNS>> task = new FutureTask<>(dao::getAll);
-        Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(task);
-        FD01_CAMPAIGNS[] array;
-        try {
-            array = task.get().toArray(new FD01_CAMPAIGNS[0]);
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
+        CampaignsAccess access = new CampaignsAccess(dao);
+        FD01_CAMPAIGNS[] array = access.getAll().toArray(new FD01_CAMPAIGNS[0]);
         CampaignsAdapter adapter = new CampaignsAdapter(array);
         RecyclerView recyclerView = findViewById(R.id.rcvCampaigns);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

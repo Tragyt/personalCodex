@@ -2,8 +2,10 @@ package programmazionemobile.esercizi.personalcodex.Database.Entities;
 
 import androidx.room.*;
 
+import java.io.Serializable;
+
 @Entity
-public class FD01_CAMPAIGNS {
+public class FD01_CAMPAIGNS implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     public int ID;
