@@ -6,48 +6,52 @@ import android.widget.BaseExpandableListAdapter;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CampaignSectionsAdapter extends BaseExpandableListAdapter {
 
     private final Map<String, ArrayList<String>> sectionsEntities;
+    private ArrayList<String> sections;
 
     public CampaignSectionsAdapter(Map<String, ArrayList<String>> sectionsEntities) {
         this.sectionsEntities = sectionsEntities;
+        this.sections = new ArrayList<>(sectionsEntities.keySet());
     }
 
     @Override
     public int getGroupCount() {
-        return 0;
+        return sectionsEntities.size();
     }
 
     @Override
     public int getChildrenCount(int i) {
-        return 0;
+        return Objects.requireNonNull(sectionsEntities.get(sections.get(i))).size();
     }
 
     @Override
     public Object getGroup(int i) {
-        return null;
+        return sections.get(i);
     }
 
     @Override
     public Object getChild(int i, int i1) {
-        return null;
+        return Objects.requireNonNull(sectionsEntities.get(sections.get(i))).get(i1);
     }
 
     @Override
     public long getGroupId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
     public long getChildId(int i, int i1) {
-        return 0;
+        return i1;
     }
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override

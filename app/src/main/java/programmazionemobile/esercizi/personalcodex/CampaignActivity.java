@@ -2,6 +2,7 @@ package programmazionemobile.esercizi.personalcodex;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ExpandableListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -51,6 +52,8 @@ public class CampaignActivity extends AppCompatActivity {
                         entitiesAccess.getAll(section.ID).stream()
                                 .map(entity -> entity.FD03_NAME)
                                 .collect(Collectors.toCollection(ArrayList::new)));
+
+            ExpandableListView expandableListView = findViewById(R.id.lvCampaign);
         }
     }
 }
