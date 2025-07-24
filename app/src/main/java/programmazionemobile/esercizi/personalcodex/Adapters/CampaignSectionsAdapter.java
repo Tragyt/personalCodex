@@ -1,20 +1,27 @@
 package programmazionemobile.esercizi.personalcodex.Adapters;
 
+import android.content.Context;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
+import programmazionemobile.esercizi.personalcodex.R;
 
 public class CampaignSectionsAdapter extends BaseExpandableListAdapter {
 
-    private final Map<String, ArrayList<String>> sectionsEntities;
-    private ArrayList<String> sections;
+    private final Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> sectionsEntities;
+    private final ArrayList<FD02_CAMPAIGNS_SECTIONS> sections;
 
-    public CampaignSectionsAdapter(Map<String, ArrayList<String>> sectionsEntities) {
+    public CampaignSectionsAdapter(Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> sectionsEntities) {
         this.sectionsEntities = sectionsEntities;
         this.sections = new ArrayList<>(sectionsEntities.keySet());
     }
@@ -41,12 +48,12 @@ public class CampaignSectionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getGroupId(int i) {
-        return i;
+        return sections.get(i).ID;
     }
 
     @Override
     public long getChildId(int i, int i1) {
-        return i1;
+        return Objects.requireNonNull(sectionsEntities.get(sections.get(i))).get(i1).ID;
     }
 
     @Override
@@ -56,16 +63,31 @@ public class CampaignSectionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        return null;
+        if (view == null) {
+            LayoutInflater inflater = (LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.item_campaign_section, viewGroup, false);
+        }
+
+        TextView txt = view.findViewById(R.id.txtCampaignSection);
+        txt.setTypeface(null, Typeface.BOLD);
+        txt.setText(sections.get(i).FD02_NAME);
+        return view;
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        return null;
+        if (view == null) {
+            LayoutInflater inflater = (LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.item_campaign_entity, viewGroup, false);
+        }
+
+        TextView txt = view.findViewById(R.id.txtCampaignEntity);
+        txt.setText(Objects.requireNonNull(sectionsEntities.get(sections.get(i))).get(i1).FD03_NAME);
+        return view;
     }
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
-        return false;
+        return true;
     }
 }

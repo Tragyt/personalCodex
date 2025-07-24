@@ -16,12 +16,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import programmazionemobile.esercizi.personalcodex.Adapters.CampaignSectionsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectionsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 
 public class CampaignActivity extends AppCompatActivity {
@@ -39,7 +41,7 @@ public class CampaignActivity extends AppCompatActivity {
         Intent i = getIntent();
         FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) i.getSerializableExtra("campaign");
         if (campaign != null) {
-            Map<String, ArrayList<String>> lstItems = new HashMap<>();
+            Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> lstItems = new HashMap<>();
 
             MyDatabase db = MyDatabase.getInstance(this);
             CampaignsSectionsDAO sectionsDao = db.campaignsSectionsDAO();
@@ -48,12 +50,11 @@ public class CampaignActivity extends AppCompatActivity {
             EntitiesAccess entitiesAccess = new EntitiesAccess(entitiesDao);
 
             for (FD02_CAMPAIGNS_SECTIONS section : sectionAccess.getAll(campaign.ID))
-                lstItems.put(section.FD02_NAME,
-                        entitiesAccess.getAll(section.ID).stream()
-                                .map(entity -> entity.FD03_NAME)
-                                .collect(Collectors.toCollection(ArrayList::new)));
+                lstItems.put(section, new ArrayList<>(entitiesAccess.getAll(section.ID)));
 
             ExpandableListView expandableListView = findViewById(R.id.lvCampaign);
+            CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems);
+            expandableListView.setAdapter(campaignSectionsAdapter);
         }
     }
 }
