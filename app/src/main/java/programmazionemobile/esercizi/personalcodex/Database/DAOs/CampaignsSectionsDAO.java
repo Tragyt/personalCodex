@@ -22,5 +22,5 @@ public interface CampaignsSectionsDAO {
     void update(FD02_CAMPAIGNS_SECTIONS section);
 
     @Query("SELECT * FROM FD02_CAMPAIGNS_SECTIONS WHERE FD02_CAMPAIGN_FD01 = :idCampaign")
-    List<FD02_CAMPAIGNS_SECTIONS> getAll(int idCampaign);
+    List<FD02_CAMPAIGNS_SECTIONS> getAll(long idCampaign);
 }

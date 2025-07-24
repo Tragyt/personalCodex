@@ -2,6 +2,7 @@ package programmazionemobile.esercizi.personalcodex;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 
 import androidx.activity.EdgeToEdge;
@@ -14,7 +15,6 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignSectionsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
@@ -30,19 +30,19 @@ public class CampaignActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_campaign);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clCampaign), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         Intent i = getIntent();
         FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) i.getSerializableExtra("campaign");
         if (campaign != null) {
-            Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> lstItems = new HashMap<>();
+            EdgeToEdge.enable(this);
+            setContentView(R.layout.activity_campaign);
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clCampaign), (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
 
+            Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> lstItems = new HashMap<>();
             MyDatabase db = MyDatabase.getInstance(this);
             CampaignsSectionsDAO sectionsDao = db.campaignsSectionsDAO();
             CampaignSectionsAccess sectionAccess = new CampaignSectionsAccess(sectionsDao);
@@ -55,6 +55,13 @@ public class CampaignActivity extends AppCompatActivity {
             ExpandableListView expandableListView = findViewById(R.id.lvCampaign);
             CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems);
             expandableListView.setAdapter(campaignSectionsAdapter);
+
+            ((EditText) findViewById(R.id.editCampaignTitle)).setText(campaign.FD01_NAME);
+
+            findViewById(R.id.btnBackCampaign).setOnClickListener(view -> finish());
+        } else {
+            finish();
         }
+
     }
 }

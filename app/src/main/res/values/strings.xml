@@ -4,10 +4,19 @@
     <string name="menu_new">New</string>
     <string name="menu_receive">Receive</string>
     <string name="menu_templates">Templates</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_share">Share</string>
 
     <string name="title_templates">Select Template</string>
     <string name="title_template">New Template</string>
 
     <string name="remove_section">remove section</string>
     <string name="new_section">New Section</string>
+
+    <string name="btnSettings_description">Settings</string>
+    <string name="btnNewCampaign_description">New item</string>
+    <string name="btnNewTemplate_description">New template</string>
+    <string name="btnBack_description">Back</string>
+    <string name="btnMenu_description">Menu</string>
+    <string name="btnDelete_description">Delete</string>
 </resources>

@@ -17,11 +17,11 @@ public class TemplateAccess {
     }
 
     public List<TP01_TEMPLATES> getAll(){
-        FutureTask<List<TP01_TEMPLATES>> task = new FutureTask<List<TP01_TEMPLATES>>(() -> dao.getAll());
+        FutureTask<List<TP01_TEMPLATES>> task = new FutureTask<>(() -> dao.getAll());
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
-        List<TP01_TEMPLATES> ret = null;
+        List<TP01_TEMPLATES> ret;
         try {
             ret = task.get();
         } catch (ExecutionException | InterruptedException e) {
@@ -31,14 +31,12 @@ public class TemplateAccess {
     }
 
     public long insert(TP01_TEMPLATES template){
-        FutureTask<Long> task = new FutureTask<Long>(() -> {
-            return dao.insert(template);
-        });
+        FutureTask<Long> task = new FutureTask<>(() -> dao.insert(template));
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
 
-        long ret = 0;
+        long ret;
         try {
             ret = task.get();
         } catch (ExecutionException | InterruptedException e) {

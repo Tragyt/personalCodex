@@ -65,6 +65,11 @@ public class TemplatesActivity extends AppCompatActivity {
     }
 
     private void SetupNewCampaign() {
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> finish()
+        );
+
         findViewById(R.id.txtTitleTemplates).setVisibility(TextView.VISIBLE);
         findViewById(R.id.btnNewTemplate).setVisibility(Button.INVISIBLE);
     }

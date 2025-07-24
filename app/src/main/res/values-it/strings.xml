@@ -5,10 +5,19 @@
     <string name="menu_new">Nuovo</string>
     <string name="menu_receive">Ricevi</string>
     <string name="menu_templates">Template</string>
+    <string name="menu_delete">Elimina</string>
+    <string name="menu_share">Condividi</string>
 
     <string name="title_templates">Seleziona Template</string>
     <string name="title_template">Nuovo Template</string>
 
     <string name="remove_section">rimuovi sezione</string>
     <string name="new_section">Nuova Sezione</string>
+
+    <string name="btnSettings_description">Impostazioni</string>
+    <string name="btnNewCampaign_description">Nuovo Elemento</string>
+    <string name="btnNewTemplate_description">Nuovo template</string>
+    <string name="btnBack_description">Indietro</string>
+    <string name="btnMenu_description">Menu</string>
+    <string name="btnDelete_description">Elimina</string>
 </resources>

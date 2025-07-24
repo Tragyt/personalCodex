@@ -17,7 +17,7 @@ public class CampaignSectionsAccess {
         this.dao = dao;
     }
 
-    public ArrayList<FD02_CAMPAIGNS_SECTIONS> getAll(int idCampaign) {
+    public ArrayList<FD02_CAMPAIGNS_SECTIONS> getAll(long idCampaign) {
         FutureTask<List<FD02_CAMPAIGNS_SECTIONS>> task = new FutureTask<>(() -> dao.getAll(idCampaign));
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);

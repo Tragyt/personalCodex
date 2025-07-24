@@ -7,6 +7,8 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -14,11 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
+import java.util.ArrayList;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
@@ -28,6 +26,8 @@ import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Helpers.TemplatesHelper.TemplatesRoles;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> CaricaCampaigns()
+        );
+
         Context context = this;
         ImageButton btnNewCampaign = findViewById(R.id.btnNewCampaign);
         btnNewCampaign.setOnClickListener(view -> {
@@ -51,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 if (item == R.id.itmNew) {
                     Intent i = new Intent(context, TemplatesActivity.class);
                     i.putExtra("Role", TemplatesRoles.NEW_CAMPAIGN);
-                    context.startActivity(i);
+                    activityResultLauncher.launch(i);
                     return true;
                 }
                 return false;
@@ -78,11 +83,15 @@ public class MainActivity extends AppCompatActivity {
             popupMenu.show();
         });
 
-        MyDatabase db = MyDatabase.getInstance(context);
+        CaricaCampaigns();
+    }
+
+    private void CaricaCampaigns(){
+        MyDatabase db = MyDatabase.getInstance(this);
         CampaignsDAO dao = db.campaignsDAO();
         CampaignsAccess access = new CampaignsAccess(dao);
-        FD01_CAMPAIGNS[] array = access.getAll().toArray(new FD01_CAMPAIGNS[0]);
-        CampaignsAdapter adapter = new CampaignsAdapter(array);
+        ArrayList<FD01_CAMPAIGNS> array = access.getAll();
+        CampaignsAdapter adapter = new CampaignsAdapter(array, access, activityResultLauncher);
         RecyclerView recyclerView = findViewById(R.id.rcvCampaigns);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

@@ -13,7 +13,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAI
 @Dao
 public interface CampaignsDAO {
     @Insert
-    void insert(FD01_CAMPAIGNS campaign);
+    long insert(FD01_CAMPAIGNS campaign);
 
     @Delete
     void delete(FD01_CAMPAIGNS campaign);

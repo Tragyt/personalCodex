@@ -17,7 +17,7 @@ public class CampaignsAccess {
         this.dao = dao;
     }
 
-    public ArrayList<FD01_CAMPAIGNS> getAll(){
+    public ArrayList<FD01_CAMPAIGNS> getAll() {
         FutureTask<List<FD01_CAMPAIGNS>> task = new FutureTask<>(dao::getAll);
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
@@ -29,5 +29,30 @@ public class CampaignsAccess {
         }
 
         return ret;
+    }
+
+    public Long insert(FD01_CAMPAIGNS campaign) {
+        FutureTask<Long> task = new FutureTask<>(() -> dao.insert(campaign));
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+
+        long ret;
+        try {
+            ret = task.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ret;
+    }
+
+    public void delete(FD01_CAMPAIGNS campaign) {
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.delete(campaign);
+            return null;
+        });
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
     }
 }

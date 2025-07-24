@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".TemplatesActivity"/>
         <activity android:name=".TemplateActivity"/>
+        <activity android:name=".CampaignActivity"/>
     </application>
 
 </manifest>

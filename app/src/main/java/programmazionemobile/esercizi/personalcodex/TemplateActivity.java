@@ -30,14 +30,15 @@ public class TemplateActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_template);
 
-        MyDatabase db = MyDatabase.getInstance(this);
-        SectionsDAO dao = db.sectionsDAO();
         Intent i = getIntent();
         TP01_TEMPLATES template = (TP01_TEMPLATES) i.getSerializableExtra("template");
         if (template != null) {
+            EdgeToEdge.enable(this);
+            setContentView(R.layout.activity_template);
+
+            MyDatabase db = MyDatabase.getInstance(this);
+            SectionsDAO dao = db.sectionsDAO();
             TemplateAccess templateAccess = new TemplateAccess(db.templatesDAO());
 
             sectionAccess = new SectionAccess(dao);
