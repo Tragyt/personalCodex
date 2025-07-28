@@ -55,4 +55,14 @@ public class CampaignsAccess {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
     }
+
+    public void update(FD01_CAMPAIGNS campaign){
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.update(campaign);
+            return null;
+        });
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+    }
 }

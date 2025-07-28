@@ -20,22 +20,6 @@
         tools:ignore="SpeakableTextPresentCheck"
         android:elevation="8dp"/>
 
-    <EditText
-        android:id="@+id/editCampaignTitle"
-        android:layout_width="384dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="15dp"
-        android:ems="10"
-        android:inputType="text"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="Autofill,LabelFor,SpeakableTextPresentCheck" />
-
     <ExpandableListView
         android:id="@+id/lvCampaign"
         android:layout_width="409dp"
@@ -43,4 +27,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtCampaignTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="175dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="175dp"
+        android:layout_marginBottom="56dp"
+        app:layout_constraintBottom_toTopOf="@+id/lvCampaign"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="50sp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,8 +2,10 @@ package programmazionemobile.esercizi.personalcodex;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -18,13 +20,16 @@ import java.util.Map;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignSectionsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectionsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
+import programmazionemobile.esercizi.personalcodex.Fragments.EditTitleDialog;
 
 public class CampaignActivity extends AppCompatActivity {
     @Override
@@ -56,7 +61,25 @@ public class CampaignActivity extends AppCompatActivity {
             CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems);
             expandableListView.setAdapter(campaignSectionsAdapter);
 
-            ((EditText) findViewById(R.id.editCampaignTitle)).setText(campaign.FD01_NAME);
+            CampaignsDAO campaignsDAO = db.campaignsDAO();
+            CampaignsAccess campaignsAccess = new CampaignsAccess(campaignsDAO);
+
+            TextView txtTile = findViewById(R.id.txtCampaignTitle);
+            txtTile.setText(campaign.FD01_NAME);
+            View.OnClickListener clickListener = v -> {
+                EditTitleDialog fragment = (EditTitleDialog) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
+                if(fragment!=null){
+                    campaign.FD01_NAME = fragment.getText();
+                    campaignsAccess.update(campaign);
+                    txtTile.setText(campaign.FD01_NAME);
+                    fragment.dismiss();
+                }
+            };
+            txtTile.setOnLongClickListener(view ->{
+                EditTitleDialog dialog = new EditTitleDialog(campaign.FD01_NAME, clickListener);
+                dialog.show(getSupportFragmentManager(), "EditTitleDialog");
+             return true;
+            });
 
             findViewById(R.id.btnBackCampaign).setOnClickListener(view -> finish());
         } else {

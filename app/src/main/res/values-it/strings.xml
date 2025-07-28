@@ -20,4 +20,8 @@
     <string name="btnBack_description">Indietro</string>
     <string name="btnMenu_description">Menu</string>
     <string name="btnDelete_description">Elimina</string>
+
+    <string name="editTitle_dialog">modifica titolo</string>
+    <string name="btnConfirm_dialog">Conferma</string>
+    <string name="btnCancle_dialog">Annulla</string>
 </resources>
