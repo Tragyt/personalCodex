@@ -30,15 +30,15 @@
 
     <TextView
         android:id="@+id/txtCampaignTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="175dp"
         android:layout_marginTop="56dp"
-        android:layout_marginEnd="175dp"
         android:layout_marginBottom="56dp"
+        android:background="@drawable/txt_updatable_background"
+        android:textSize="50sp"
         app:layout_constraintBottom_toTopOf="@+id/lvCampaign"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="50sp"/>
+        android:gravity="center"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
