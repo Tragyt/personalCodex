@@ -1,7 +1,6 @@
-- in campagne mostrare sezioni ed elementi con ExpandableListView
-    -   se tenuto premuto mostrare dialog dove cambiare nome o eliminare
-    - possibilità di cambiare nome a campagna tenendo premuto il txt dento all'activity della campagna
-
+- pagina dell'entità
+    - inserire immagine circolare con picker
+- barra di ricerca nelle sezioni della campagna
 
 extra:
     -   generazione immagini con IA da descrizione

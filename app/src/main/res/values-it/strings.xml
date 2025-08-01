@@ -20,6 +20,8 @@
     <string name="btnBack_description">Indietro</string>
     <string name="btnMenu_description">Menu</string>
     <string name="btnDelete_description">Elimina</string>
+    <string name="btnAddEntity_description">Nuovo elemento</string>
+    <string name="imgEntity_description">immagine dell\'entità</string>
 
     <string name="editTitle_dialog">modifica titolo</string>
     <string name="btnConfirm_dialog">Conferma</string>

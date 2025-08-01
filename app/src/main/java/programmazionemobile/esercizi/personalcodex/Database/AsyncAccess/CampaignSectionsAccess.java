@@ -30,4 +30,24 @@ public class CampaignSectionsAccess {
 
         return ret;
     }
+
+    public void insert(FD02_CAMPAIGNS_SECTIONS section) {
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.insert(section);
+            return null;
+        });
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+    }
+
+    public void update(FD02_CAMPAIGNS_SECTIONS section){
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.update(section);
+            return null;
+        });
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+    }
 }

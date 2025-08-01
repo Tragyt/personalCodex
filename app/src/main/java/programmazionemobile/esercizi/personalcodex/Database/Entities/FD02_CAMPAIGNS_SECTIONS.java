@@ -18,9 +18,9 @@ public class FD02_CAMPAIGNS_SECTIONS {
     public String FD02_NAME;
 
     @ColumnInfo(name = "FD02_CAMPAIGN_FD01")
-    public int FD02_CAMPAIGN_FD01;
+    public long FD02_CAMPAIGN_FD01;
 
-    public FD02_CAMPAIGNS_SECTIONS(String FD02_NAME, int FD02_CAMPAIGN_FD01) {
+    public FD02_CAMPAIGNS_SECTIONS(String FD02_NAME, long FD02_CAMPAIGN_FD01) {
         this.FD02_NAME = FD02_NAME;
         this.FD02_CAMPAIGN_FD01 = FD02_CAMPAIGN_FD01;
     }

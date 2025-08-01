@@ -19,6 +19,8 @@
     <string name="btnBack_description">Back</string>
     <string name="btnMenu_description">Menu</string>
     <string name="btnDelete_description">Delete</string>
+    <string name="btnAddEntity_description">New element</string>
+    <string name="imgEntity_description">Entity picture</string>
 
     <string name="editTitle_dialog">edit title</string>
     <string name="btnConfirm_dialog">Confirm</string>

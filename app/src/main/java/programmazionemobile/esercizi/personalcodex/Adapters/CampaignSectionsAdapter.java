@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -63,14 +64,19 @@ public class CampaignSectionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
+        Context context = viewGroup.getContext();
         if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.item_campaign_section, viewGroup, false);
         }
 
+        FD02_CAMPAIGNS_SECTIONS section = sections.get(i);
         TextView txt = view.findViewById(R.id.txtCampaignSection);
         txt.setTypeface(null, Typeface.BOLD);
-        txt.setText(sections.get(i).FD02_NAME);
+        txt.setText(section.FD02_NAME);
+
+        ImageButton btn = view.findViewById(R.id.btnAddEntity);
+        btn.setFocusable(false);
         return view;
     }
 

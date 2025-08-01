@@ -3,7 +3,7 @@ package programmazionemobile.esercizi.personalcodex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
+import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -60,6 +60,28 @@ public class CampaignActivity extends AppCompatActivity {
             ExpandableListView expandableListView = findViewById(R.id.lvCampaign);
             CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems);
             expandableListView.setAdapter(campaignSectionsAdapter);
+            expandableListView.setOnItemLongClickListener((adapterView, view, i1, l) -> {
+                if (ExpandableListView.getPackedPositionType(l) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+                    long packedPosition = expandableListView.getExpandableListPosition(i1);
+                    int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
+                    FD02_CAMPAIGNS_SECTIONS section = (FD02_CAMPAIGNS_SECTIONS) campaignSectionsAdapter.getGroup(groupPosition);
+
+                    OnClickListener clickListener = v -> {
+                        EditTitleDialog fragment = (EditTitleDialog) getSupportFragmentManager().findFragmentByTag("editSectionDialog");
+                        if (fragment != null) {
+                            section.FD02_NAME = fragment.getText();
+                            sectionAccess.update(section);
+                            ((TextView) view.findViewById(R.id.txtCampaignSection)).setText(section.FD02_NAME);
+                            fragment.dismiss();
+                        }
+                    };
+                    EditTitleDialog dialog = new EditTitleDialog(section.FD02_NAME, clickListener);
+                    dialog.show(getSupportFragmentManager(), "editSectionDialog");
+                    return true;
+                }
+
+                return false;
+            });
 
             CampaignsDAO campaignsDAO = db.campaignsDAO();
             CampaignsAccess campaignsAccess = new CampaignsAccess(campaignsDAO);
@@ -68,17 +90,17 @@ public class CampaignActivity extends AppCompatActivity {
             txtTile.setText(campaign.FD01_NAME);
             View.OnClickListener clickListener = v -> {
                 EditTitleDialog fragment = (EditTitleDialog) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
-                if(fragment!=null){
+                if (fragment != null) {
                     campaign.FD01_NAME = fragment.getText();
                     campaignsAccess.update(campaign);
                     txtTile.setText(campaign.FD01_NAME);
                     fragment.dismiss();
                 }
             };
-            txtTile.setOnLongClickListener(view ->{
+            txtTile.setOnLongClickListener(view -> {
                 EditTitleDialog dialog = new EditTitleDialog(campaign.FD01_NAME, clickListener);
                 dialog.show(getSupportFragmentManager(), "EditTitleDialog");
-             return true;
+                return true;
             });
 
             findViewById(R.id.btnBackCampaign).setOnClickListener(view -> finish());
