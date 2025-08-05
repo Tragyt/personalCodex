@@ -21,6 +21,6 @@ public interface CampaignsDAO {
     @Update
     void update(FD01_CAMPAIGNS campaign);
 
-    @Query("SELECT * FROM FD01_CAMPAIGNS")
+    @Query("SELECT * FROM FD01_CAMPAIGNS ORDER BY ID")
     List<FD01_CAMPAIGNS> getAll();
 }

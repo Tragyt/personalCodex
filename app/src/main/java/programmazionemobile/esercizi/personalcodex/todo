@@ -1,6 +1,9 @@
+- possibilità di aggiungere sezioni alle campagne
+- possibilità di eliminare sezioni ed entità nell'activity della campagna
 - pagina dell'entità
     - inserire immagine circolare con picker
 - barra di ricerca nelle sezioni della campagna
+- traduzione elementi default
 
 extra:
     -   generazione immagini con IA da descrizione

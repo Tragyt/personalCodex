@@ -14,7 +14,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITI
 @Dao
 public interface EntitiesDAO {
     @Insert
-    void insert(FD03_ENTITIES entity);
+    Long insert(FD03_ENTITIES entity);
 
     @Delete
     void delete(FD03_ENTITIES entity);
@@ -25,6 +25,7 @@ public interface EntitiesDAO {
     @Query("SELECT ENTITY.* " +
             "FROM FD03_ENTITIES AS ENTITY " +
             "INNER JOIN FD02_CAMPAIGNS_SECTIONS AS SECTION ON SECTION.ID = FD03_SECTION_FD02 " +
-            "WHERE SECTION.ID = :idSection AND FD03_NAME LIKE '%' || :name || '%'")
+            "WHERE SECTION.ID = :idSection AND FD03_NAME LIKE '%' || :name || '%'" +
+            "ORDER BY ENTITY.ID")
     List<FD03_ENTITIES> get(long idSection, String name);
 }

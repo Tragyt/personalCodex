@@ -18,7 +18,7 @@
         app:srcCompat="@drawable/ic_back"
         android:elevation="8dp"/>
 
-    <ExpandableListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lvCampaign"
         android:layout_width="409dp"
         android:layout_height="600dp"

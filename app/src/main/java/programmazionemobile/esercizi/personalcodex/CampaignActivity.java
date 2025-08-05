@@ -3,8 +3,6 @@ package programmazionemobile.esercizi.personalcodex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignSectionsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
@@ -27,9 +25,9 @@ import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectio
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
-import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Fragments.EditTitleDialog;
+import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 
 public class CampaignActivity extends AppCompatActivity {
     @Override
@@ -47,41 +45,21 @@ public class CampaignActivity extends AppCompatActivity {
                 return insets;
             });
 
-            Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> lstItems = new HashMap<>();
+            ArrayList<CampaignsHelper.SectionEntities> lstItems = new ArrayList<>();
             MyDatabase db = MyDatabase.getInstance(this);
             CampaignsSectionsDAO sectionsDao = db.campaignsSectionsDAO();
             CampaignSectionsAccess sectionAccess = new CampaignSectionsAccess(sectionsDao);
             EntitiesDAO entitiesDao = db.entitiesDAO();
             EntitiesAccess entitiesAccess = new EntitiesAccess(entitiesDao);
 
-            for (FD02_CAMPAIGNS_SECTIONS section : sectionAccess.getAll(campaign.ID))
-                lstItems.put(section, new ArrayList<>(entitiesAccess.getAll(section.ID)));
+            ArrayList<FD02_CAMPAIGNS_SECTIONS> sections = sectionAccess.getAll(campaign.ID);
+            for (FD02_CAMPAIGNS_SECTIONS section : sections)
+                lstItems.add(new CampaignsHelper.SectionEntities(section, new ArrayList<>(entitiesAccess.getAll(section.ID))));
 
-            ExpandableListView expandableListView = findViewById(R.id.lvCampaign);
-            CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems);
+            RecyclerView expandableListView = findViewById(R.id.lvCampaign);
+            expandableListView.setLayoutManager(new LinearLayoutManager(this));
+            CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager());
             expandableListView.setAdapter(campaignSectionsAdapter);
-            expandableListView.setOnItemLongClickListener((adapterView, view, i1, l) -> {
-                if (ExpandableListView.getPackedPositionType(l) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-                    long packedPosition = expandableListView.getExpandableListPosition(i1);
-                    int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
-                    FD02_CAMPAIGNS_SECTIONS section = (FD02_CAMPAIGNS_SECTIONS) campaignSectionsAdapter.getGroup(groupPosition);
-
-                    OnClickListener clickListener = v -> {
-                        EditTitleDialog fragment = (EditTitleDialog) getSupportFragmentManager().findFragmentByTag("editSectionDialog");
-                        if (fragment != null) {
-                            section.FD02_NAME = fragment.getText();
-                            sectionAccess.update(section);
-                            ((TextView) view.findViewById(R.id.txtCampaignSection)).setText(section.FD02_NAME);
-                            fragment.dismiss();
-                        }
-                    };
-                    EditTitleDialog dialog = new EditTitleDialog(section.FD02_NAME, clickListener);
-                    dialog.show(getSupportFragmentManager(), "editSectionDialog");
-                    return true;
-                }
-
-                return false;
-            });
 
             CampaignsDAO campaignsDAO = db.campaignsDAO();
             CampaignsAccess campaignsAccess = new CampaignsAccess(campaignsDAO);

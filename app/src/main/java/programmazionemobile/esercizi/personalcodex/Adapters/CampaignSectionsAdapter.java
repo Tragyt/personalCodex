@@ -1,99 +1,131 @@
 package programmazionemobile.esercizi.personalcodex.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
+import programmazionemobile.esercizi.personalcodex.EntityActivity;
+import programmazionemobile.esercizi.personalcodex.Fragments.EditTitleDialog;
+import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 
-public class CampaignSectionsAdapter extends BaseExpandableListAdapter {
+public class CampaignSectionsAdapter extends RecyclerView.Adapter<CampaignSectionsAdapter.ItemViewHolder> {
 
-    private final Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> sectionsEntities;
-    private final ArrayList<FD02_CAMPAIGNS_SECTIONS> sections;
+    private final ArrayList<CampaignsHelper.SectionEntities> sectionsEntities;
+    private final EntitiesAccess entitiesAccess;
+    private final CampaignSectionsAccess sectionAccess;
+    private final FragmentManager fragmentManager;
 
-    public CampaignSectionsAdapter(Map<FD02_CAMPAIGNS_SECTIONS, ArrayList<FD03_ENTITIES>> sectionsEntities) {
+    public CampaignSectionsAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities, EntitiesAccess entitiesAccess, CampaignSectionsAccess sectionAccess, FragmentManager fragmentManager) {
         this.sectionsEntities = sectionsEntities;
-        this.sections = new ArrayList<>(sectionsEntities.keySet());
+        this.entitiesAccess = entitiesAccess;
+        this.sectionAccess = sectionAccess;
+        this.fragmentManager = fragmentManager;
+    }
+
+
+    @NonNull
+    @Override
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_campaign_section, parent, false);
+        return new ItemViewHolder(view);
     }
 
     @Override
-    public int getGroupCount() {
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        CampaignsHelper.SectionEntities sectionEntity = sectionsEntities.get(position);
+        FD02_CAMPAIGNS_SECTIONS section = sectionEntity.getSection();
+        ArrayList<FD03_ENTITIES> entities = sectionEntity.getEntities();
+
+        ConstraintLayout cvSectionEntity = holder.getLayout();
+        TextView txtCampaignSection = cvSectionEntity.findViewById(R.id.txtCampaignSection);
+        ImageView imgArrow = cvSectionEntity.findViewById(R.id.imgArrow);
+        RecyclerView rcvEntities = cvSectionEntity.findViewById(R.id.rcvEntities);
+        ConstraintLayout cvSection = cvSectionEntity.findViewById(R.id.cvSection);
+        Context context = cvSectionEntity.getContext();
+
+        txtCampaignSection.setText(section.FD02_NAME);
+        txtCampaignSection.setTypeface(null, Typeface.BOLD);
+
+        if (sectionEntity.isExpanded()) {
+            imgArrow.setImageResource(R.drawable.expandable_list_up);
+            rcvEntities.setVisibility(View.VISIBLE);
+
+            EntitiesAdapter entitiesAdapter = new EntitiesAdapter(entities);
+            rcvEntities.setLayoutManager(new LinearLayoutManager(context));
+            rcvEntities.setHasFixedSize(true);
+            rcvEntities.setAdapter(entitiesAdapter);
+        } else {
+            imgArrow.setImageResource(R.drawable.expandable_list_down);
+            rcvEntities.setVisibility(View.GONE);
+        }
+
+        cvSection.setOnClickListener(view -> {
+            sectionEntity.expand_reduce();
+            notifyItemChanged(position);
+        });
+
+        cvSectionEntity.findViewById(R.id.btnAddEntity).setOnClickListener(view -> {
+            FD03_ENTITIES entity = new FD03_ENTITIES(section.ID, context.getString(R.string.btnNewCampaign_description));
+            entity.ID = entitiesAccess.insert(entity);
+            sectionEntity.add(entity);
+            notifyItemChanged(position);
+
+            Intent intent = new Intent(context, EntityActivity.class);
+            intent.putExtra("entity", entity);
+            context.startActivity(intent);
+        });
+        //        btn.setFocusable(false);
+
+        cvSection.setOnLongClickListener(view -> {
+            View.OnClickListener clickListener = v -> {
+                EditTitleDialog fragment = (EditTitleDialog) fragmentManager.findFragmentByTag("editSectionDialog");
+                if (fragment != null) {
+                    section.FD02_NAME = fragment.getText();
+                    sectionAccess.update(section);
+                    txtCampaignSection.setText(section.FD02_NAME);
+                    fragment.dismiss();
+                }
+            };
+            EditTitleDialog dialog = new EditTitleDialog(section.FD02_NAME, clickListener);
+            dialog.show(fragmentManager, "editSectionDialog");
+            return true;
+        });
+    }
+
+    @Override
+    public int getItemCount() {
         return sectionsEntities.size();
     }
 
-    @Override
-    public int getChildrenCount(int i) {
-        return Objects.requireNonNull(sectionsEntities.get(sections.get(i))).size();
-    }
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-    @Override
-    public Object getGroup(int i) {
-        return sections.get(i);
-    }
+        private final ConstraintLayout cvSectionEntity;
 
-    @Override
-    public Object getChild(int i, int i1) {
-        return Objects.requireNonNull(sectionsEntities.get(sections.get(i))).get(i1);
-    }
-
-    @Override
-    public long getGroupId(int i) {
-        return sections.get(i).ID;
-    }
-
-    @Override
-    public long getChildId(int i, int i1) {
-        return Objects.requireNonNull(sectionsEntities.get(sections.get(i))).get(i1).ID;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
-    @Override
-    public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        Context context = viewGroup.getContext();
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.item_campaign_section, viewGroup, false);
+        public ItemViewHolder(@NonNull View itemView) {
+            super(itemView);
+            cvSectionEntity = itemView.findViewById(R.id.cvSectionEntity);
         }
 
-        FD02_CAMPAIGNS_SECTIONS section = sections.get(i);
-        TextView txt = view.findViewById(R.id.txtCampaignSection);
-        txt.setTypeface(null, Typeface.BOLD);
-        txt.setText(section.FD02_NAME);
-
-        ImageButton btn = view.findViewById(R.id.btnAddEntity);
-        btn.setFocusable(false);
-        return view;
-    }
-
-    @Override
-    public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.item_campaign_entity, viewGroup, false);
+        public ConstraintLayout getLayout() {
+            return cvSectionEntity;
         }
-
-        TextView txt = view.findViewById(R.id.txtCampaignEntity);
-        txt.setText(Objects.requireNonNull(sectionsEntities.get(sections.get(i))).get(i1).FD03_NAME);
-        return view;
-    }
-
-    @Override
-    public boolean isChildSelectable(int i, int i1) {
-        return true;
     }
 }

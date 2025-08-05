@@ -21,6 +21,6 @@ public interface TemplatesDAO {
     @Update
     void update(TP01_TEMPLATES template);
 
-    @Query("SELECT * FROM TP01_TEMPLATES")
+    @Query("SELECT * FROM TP01_TEMPLATES ORDER BY ID")
     List<TP01_TEMPLATES> getAll();
 }
