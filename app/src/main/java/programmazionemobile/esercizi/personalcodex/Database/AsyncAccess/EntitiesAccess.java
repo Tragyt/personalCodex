@@ -8,8 +8,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
-import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
-import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
 
 public class EntitiesAccess {
@@ -19,8 +17,8 @@ public class EntitiesAccess {
         this.dao = dao;
     }
 
-    public ArrayList<FD03_ENTITIES> getAll(long idSection){
-        FutureTask<List<FD03_ENTITIES>> task = new FutureTask<>(() -> dao.get(idSection,""));
+    public ArrayList<FD03_ENTITIES> getAll(long idSection) {
+        FutureTask<List<FD03_ENTITIES>> task = new FutureTask<>(() -> dao.get(idSection, ""));
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
         ArrayList<FD03_ENTITIES> ret;
@@ -33,7 +31,7 @@ public class EntitiesAccess {
         return ret;
     }
 
-    public void update(FD03_ENTITIES entity){
+    public void update(FD03_ENTITIES entity) {
         FutureTask<?> task = new FutureTask<>(() -> {
             dao.update(entity);
             return null;
@@ -56,5 +54,14 @@ public class EntitiesAccess {
             throw new RuntimeException(e);
         }
         return ret;
+    }
+
+    public void delete(FD03_ENTITIES entity) {
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.delete(entity);
+            return null;
+        });
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
     }
 }

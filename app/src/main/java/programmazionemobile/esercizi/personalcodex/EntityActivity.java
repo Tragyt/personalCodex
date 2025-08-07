@@ -16,7 +16,7 @@ import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.Entities
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
-import programmazionemobile.esercizi.personalcodex.Fragments.EditTitleDialog;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogEditText;
 
 public class EntityActivity extends AppCompatActivity {
     @Override
@@ -42,7 +42,7 @@ public class EntityActivity extends AppCompatActivity {
             txtTitle.setText(entity.FD03_NAME);
 
             View.OnClickListener titleDialogClick = v -> {
-                EditTitleDialog dialog = (EditTitleDialog) getSupportFragmentManager().findFragmentByTag("titleDialog");
+                DialogEditText dialog = (DialogEditText) getSupportFragmentManager().findFragmentByTag("titleDialog");
                 if (dialog != null) {
                     entity.FD03_NAME = dialog.getText();
                     entitiesAccess.update(entity);
@@ -50,7 +50,7 @@ public class EntityActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             };
-            EditTitleDialog titleDialog = new EditTitleDialog(entity.FD03_NAME, titleDialogClick);
+            DialogEditText titleDialog = new DialogEditText(entity.FD03_NAME, titleDialogClick);
             txtTitle.setOnLongClickListener(view -> {
                 titleDialog.show(getSupportFragmentManager(),"titleDialog");
                 return true;

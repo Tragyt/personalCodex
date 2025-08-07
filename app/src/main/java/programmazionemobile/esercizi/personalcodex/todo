@@ -1,9 +1,11 @@
+- creare dialog per conferma eliminazione entity dopo swipe
 - possibilità di aggiungere sezioni alle campagne
 - possibilità di eliminare sezioni ed entità nell'activity della campagna
 - pagina dell'entità
     - inserire immagine circolare con picker
 - barra di ricerca nelle sezioni della campagna
 - traduzione elementi default
+- da girato fa schifo
 
 extra:
     -   generazione immagini con IA da descrizione

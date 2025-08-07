@@ -26,7 +26,7 @@ import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
-import programmazionemobile.esercizi.personalcodex.Fragments.EditTitleDialog;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogEditText;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 
 public class CampaignActivity extends AppCompatActivity {
@@ -34,9 +34,12 @@ public class CampaignActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //dati intent
         Intent i = getIntent();
         FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) i.getSerializableExtra("campaign");
         if (campaign != null) {
+
+            //setup activity schermo
             EdgeToEdge.enable(this);
             setContentView(R.layout.activity_campaign);
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clCampaign), (v, insets) -> {
@@ -45,29 +48,34 @@ public class CampaignActivity extends AppCompatActivity {
                 return insets;
             });
 
+            //setup dati
             ArrayList<CampaignsHelper.SectionEntities> lstItems = new ArrayList<>();
             MyDatabase db = MyDatabase.getInstance(this);
             CampaignsSectionsDAO sectionsDao = db.campaignsSectionsDAO();
             CampaignSectionsAccess sectionAccess = new CampaignSectionsAccess(sectionsDao);
             EntitiesDAO entitiesDao = db.entitiesDAO();
             EntitiesAccess entitiesAccess = new EntitiesAccess(entitiesDao);
+            CampaignsDAO campaignsDAO = db.campaignsDAO();
+            CampaignsAccess campaignsAccess = new CampaignsAccess(campaignsDAO);
 
+            //lista sezioni
             ArrayList<FD02_CAMPAIGNS_SECTIONS> sections = sectionAccess.getAll(campaign.ID);
             for (FD02_CAMPAIGNS_SECTIONS section : sections)
                 lstItems.add(new CampaignsHelper.SectionEntities(section, new ArrayList<>(entitiesAccess.getAll(section.ID))));
 
+            //setup recyclerview
             RecyclerView expandableListView = findViewById(R.id.lvCampaign);
             expandableListView.setLayoutManager(new LinearLayoutManager(this));
             CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager());
             expandableListView.setAdapter(campaignSectionsAdapter);
 
-            CampaignsDAO campaignsDAO = db.campaignsDAO();
-            CampaignsAccess campaignsAccess = new CampaignsAccess(campaignsDAO);
-
+            //setup titolo
             TextView txtTile = findViewById(R.id.txtCampaignTitle);
             txtTile.setText(campaign.FD01_NAME);
-            View.OnClickListener clickListener = v -> {
-                EditTitleDialog fragment = (EditTitleDialog) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
+
+            //setup dialog modifica titolo
+            View.OnClickListener clickListener = v -> { //modifica titolo alla conferma
+                DialogEditText fragment = (DialogEditText) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
                 if (fragment != null) {
                     campaign.FD01_NAME = fragment.getText();
                     campaignsAccess.update(campaign);
@@ -75,8 +83,8 @@ public class CampaignActivity extends AppCompatActivity {
                     fragment.dismiss();
                 }
             };
-            txtTile.setOnLongClickListener(view -> {
-                EditTitleDialog dialog = new EditTitleDialog(campaign.FD01_NAME, clickListener);
+            txtTile.setOnLongClickListener(view -> { //apertura dialog tenendo premuto
+                DialogEditText dialog = new DialogEditText(campaign.FD01_NAME, clickListener);
                 dialog.show(getSupportFragmentManager(), "EditTitleDialog");
                 return true;
             });

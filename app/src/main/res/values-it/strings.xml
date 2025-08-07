@@ -22,6 +22,7 @@
     <string name="btnDelete_description">Elimina</string>
     <string name="btnAddEntity_description">Nuovo elemento</string>
     <string name="imgEntity_description">immagine dell\'entità</string>
+    <string name="icExpandable_description">menu espandibile</string>
 
     <string name="editTitle_dialog">modifica titolo</string>
     <string name="btnConfirm_dialog">Conferma</string>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,14 +18,13 @@ import java.util.Objects;
 
 import programmazionemobile.esercizi.personalcodex.R;
 
-public class EditTitleDialog extends DialogFragment {
+public class DialogEditText extends DialogFragment {
 
     private final String text;
     private final View.OnClickListener clickListener;
-
     private View view;
 
-    public EditTitleDialog(String text, View.OnClickListener clickListener) {
+    public DialogEditText(String text, View.OnClickListener clickListener) {
         this.text = text;
         this.clickListener = clickListener;
     }
@@ -32,8 +32,9 @@ public class EditTitleDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.dialog_title_edit, container, false);
-        ((TextView) view.findViewById(R.id.txtDialog)).setText(text);
+        view = inflater.inflate(R.layout.dialog_edit_text, container, false);
+        EditText txt = view.findViewById(R.id.txtDialog);
+        txt.setText(text);
         view.findViewById(R.id.btnConfirmDialog).setOnClickListener(clickListener);
         view.findViewById(R.id.btnCancelDialog).setOnClickListener(v -> dismiss());
         return view;
