@@ -12,6 +12,7 @@
 
     <string name="remove_section">remove section</string>
     <string name="new_section">New Section</string>
+    <string name="newSection_title">Long press to edit</string>
 
     <string name="btnSettings_description">Settings</string>
     <string name="btnNewCampaign_description">New item</string>
@@ -26,4 +27,8 @@
     <string name="editTitle_dialog">edit title</string>
     <string name="btnConfirm_dialog">Confirm</string>
     <string name="btnCancle_dialog">Cancel</string>
+
+    <string name="txtDialogDelete">Delete permanently?</string>
+    <string name="txtDialogWarning">Warning</string>
+    <string name="txtDialogWarningDeleteSection">Remove all section\'s children before</string>
 </resources>

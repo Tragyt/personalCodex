@@ -31,22 +31,27 @@ public class SectionAccess {
         return ret;
     }
 
-    public void delete(TP02_SECTIONS section){
+    public void delete(long idSection){
         FutureTask<?> task = new FutureTask<>(() -> {
-            dao.delete(section);
+            dao.delete(idSection);
             return null;
         });
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
     }
 
-    public void insert(TP02_SECTIONS section){
-        FutureTask<?> task = new FutureTask<>(() -> {
-            dao.insert(section);
-            return null;
-        });
+    public long insert(TP02_SECTIONS section){
+        FutureTask<Long> task = new FutureTask<>(() -> dao.insert(section));
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
+
+        long ret;
+        try {
+            ret = task.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ret;
     }
 
     public ArrayList<TP02_SECTIONS> insertAndGetAll(TP02_SECTIONS section){

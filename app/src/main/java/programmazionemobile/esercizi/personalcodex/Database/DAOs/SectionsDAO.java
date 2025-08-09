@@ -1,7 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Database.DAOs;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -13,10 +12,10 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.TP02_SECTIO
 @Dao
 public interface SectionsDAO {
     @Insert
-    void insert(TP02_SECTIONS section);
+    long insert(TP02_SECTIONS section);
 
-    @Delete
-    void delete(TP02_SECTIONS section);
+    @Query("DELETE FROM TP02_SECTIONS WHERE id = :idSection")
+    void delete(long idSection);
 
     @Update
     void update(TP02_SECTIONS section);

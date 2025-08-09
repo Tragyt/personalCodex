@@ -1,7 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Database.DAOs;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -16,8 +15,8 @@ public interface EntitiesDAO {
     @Insert
     Long insert(FD03_ENTITIES entity);
 
-    @Delete
-    void delete(FD03_ENTITIES entity);
+    @Query("DELETE FROM fd03_entities WHERE id = :idEntity")
+    void delete(long idEntity);
 
     @Update
     void update(FD03_ENTITIES entity);

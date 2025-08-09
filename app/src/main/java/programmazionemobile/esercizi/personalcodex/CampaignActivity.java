@@ -26,7 +26,7 @@ import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
-import programmazionemobile.esercizi.personalcodex.Fragments.DialogEditText;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogEdit;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 
 public class CampaignActivity extends AppCompatActivity {
@@ -66,7 +66,7 @@ public class CampaignActivity extends AppCompatActivity {
             //setup recyclerview
             RecyclerView expandableListView = findViewById(R.id.lvCampaign);
             expandableListView.setLayoutManager(new LinearLayoutManager(this));
-            CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager());
+            CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID);
             expandableListView.setAdapter(campaignSectionsAdapter);
 
             //setup titolo
@@ -75,7 +75,7 @@ public class CampaignActivity extends AppCompatActivity {
 
             //setup dialog modifica titolo
             View.OnClickListener clickListener = v -> { //modifica titolo alla conferma
-                DialogEditText fragment = (DialogEditText) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
+                DialogEdit fragment = (DialogEdit) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
                 if (fragment != null) {
                     campaign.FD01_NAME = fragment.getText();
                     campaignsAccess.update(campaign);
@@ -84,7 +84,7 @@ public class CampaignActivity extends AppCompatActivity {
                 }
             };
             txtTile.setOnLongClickListener(view -> { //apertura dialog tenendo premuto
-                DialogEditText dialog = new DialogEditText(campaign.FD01_NAME, clickListener);
+                DialogEdit dialog = new DialogEdit(campaign.FD01_NAME, clickListener);
                 dialog.show(getSupportFragmentManager(), "EditTitleDialog");
                 return true;
             });

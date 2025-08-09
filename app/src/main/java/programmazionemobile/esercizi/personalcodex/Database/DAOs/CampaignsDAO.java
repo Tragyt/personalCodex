@@ -1,7 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Database.DAOs;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -15,8 +14,8 @@ public interface CampaignsDAO {
     @Insert
     long insert(FD01_CAMPAIGNS campaign);
 
-    @Delete
-    void delete(FD01_CAMPAIGNS campaign);
+    @Query("DELETE FROM fd01_campaigns WHERE ID = :idCampaign")
+    void delete(long idCampaign);
 
     @Update
     void update(FD01_CAMPAIGNS campaign);

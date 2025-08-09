@@ -56,9 +56,9 @@ public class EntitiesAccess {
         return ret;
     }
 
-    public void delete(FD03_ENTITIES entity) {
+    public void delete(long idEntity) {
         FutureTask<?> task = new FutureTask<>(() -> {
-            dao.delete(entity);
+            dao.delete(idEntity);
             return null;
         });
         Executor executor = Executors.newSingleThreadExecutor();

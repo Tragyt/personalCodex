@@ -7,7 +7,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class EntitiesAdapter extends RecyclerView.Adapter<EntitiesAdapter.ItemViewHolder>{
 
-    private ArrayList<FD03_ENTITIES> entities;
+    private final ArrayList<FD03_ENTITIES> entities;
 
     public EntitiesAdapter(ArrayList<FD03_ENTITIES> entities) {
         this.entities = entities;
@@ -39,6 +38,10 @@ public class EntitiesAdapter extends RecyclerView.Adapter<EntitiesAdapter.ItemVi
         TextView txtCampaignEntity = llEntity.findViewById(R.id.txtCampaignEntity);
 
         txtCampaignEntity.setText(entity.FD03_NAME);
+
+        llEntity.setOnClickListener(view -> {
+
+        });
     }
 
     @Override

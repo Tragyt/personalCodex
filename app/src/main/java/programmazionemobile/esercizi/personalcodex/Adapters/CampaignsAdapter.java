@@ -54,7 +54,7 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
             popupMenu.setOnMenuItemClickListener(menuItem ->{
                 int item = menuItem.getItemId();
                 if(item == R.id.optDelete){
-                    campaignsAccess.delete(campaign);
+                    campaignsAccess.delete(campaign.ID);
                     dataSet.remove(campaign);
                     notifyItemRemoved(position);
                 }

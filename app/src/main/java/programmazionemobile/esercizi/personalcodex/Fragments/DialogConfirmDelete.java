@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,35 +21,35 @@ import programmazionemobile.esercizi.personalcodex.R;
 public class DialogConfirmDelete extends DialogFragment {
 
     private final String text;
-    private final View.OnClickListener clickListener;
-    private Object element;
-    private View view;
+    private final View.OnClickListener confirmClickListener;
+    private final View.OnClickListener cancelClickListener;
 
-    public DialogConfirmDelete(String text, View.OnClickListener clickListener, Object element) {
+    public DialogConfirmDelete(String text, View.OnClickListener confirmClickListener) {
         this.text = text;
-        this.clickListener = clickListener;
-        this.element = element;
+        this.confirmClickListener = confirmClickListener;
+        cancelClickListener = null;
+    }
+
+    public DialogConfirmDelete(String text, View.OnClickListener confirmClickListener, View.OnClickListener cancelClickListener) {
+        this.text = text;
+        this.confirmClickListener = confirmClickListener;
+        this.cancelClickListener = cancelClickListener;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.dialog_edit_text, container, false);
-        EditText txt = view.findViewById(R.id.txtDialog);
+        View view = inflater.inflate(R.layout.dialog_confirm_delete, container, false);
+        TextView txt = view.findViewById(R.id.txtDialog);
         txt.setText(text);
-        view.findViewById(R.id.btnConfirmDialog).setOnClickListener(clickListener);
-        view.findViewById(R.id.btnCancelDialog).setOnClickListener(v -> dismiss());
+        view.findViewById(R.id.btnConfirmDialog).setOnClickListener(confirmClickListener);
 
-        if(!editable)
-        {
-            txt.setFocusable(false);
-            txt.setFocusableInTouchMode(false);
-            txt.setClickable(false);
-            txt.setLongClickable(false);
-            txt.setCursorVisible(false);
-            txt.setKeyListener(null);
-            txt.setBackgroundColor(Color.TRANSPARENT);
-        }
+        Button btnCancel = view.findViewById(R.id.btnCancelDialog);
+        if (cancelClickListener == null)
+            btnCancel.setOnClickListener(v -> dismiss());
+        else
+            btnCancel.setOnClickListener(cancelClickListener);
+
         return view;
     }
 
@@ -58,14 +58,10 @@ public class DialogConfirmDelete extends DialogFragment {
         super.onStart();
 
         Dialog dialog = getDialog();
-        if (dialog != null){
+        if (dialog != null) {
             Objects.requireNonNull(dialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
-    }
-
-    public String getText() {
-        return ((TextView) view.findViewById(R.id.txtDialog)).getText().toString();
     }
 }

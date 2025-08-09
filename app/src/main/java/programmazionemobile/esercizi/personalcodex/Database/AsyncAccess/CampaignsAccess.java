@@ -46,9 +46,9 @@ public class CampaignsAccess {
         return ret;
     }
 
-    public void delete(FD01_CAMPAIGNS campaign) {
+    public void delete(long idCampaign) {
         FutureTask<?> task = new FutureTask<>(() -> {
-            dao.delete(campaign);
+            dao.delete(idCampaign);
             return null;
         });
 

@@ -1,0 +1,70 @@
+                //eliminazione entity con swipe a sinistra
+//                ItemTouchHelper swipeDelete = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) { //swipe a sinistra per eliminare
+//                    @Override
+//                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//                        int position = viewHolder.getAdapterPosition();
+//                        FD03_ENTITIES entity = entities.get(position);
+//
+//                        //creo listener per eliminare elemento da passare al dialog
+//                        View.OnClickListener deleteClickListener = v -> {
+//                            DialogConfirmDelete fragment = (DialogConfirmDelete) fragmentManager.findFragmentByTag("confirmDeleteDialog");
+//                            if (fragment != null) {
+//                                entities.remove(entity);
+//                                entitiesAccess.delete(entity);
+//                                entitiesAdapter.notifyItemRemoved(position);
+//                                notifyItemChanged(itemHolder.getAdapterPosition());
+//                                fragment.dismiss();
+//                            }
+//                        };
+//
+//                        //listener annulla
+//                        View.OnClickListener cancelClickListener = view -> {
+//                            DialogConfirmDelete fragment = (DialogConfirmDelete) fragmentManager.findFragmentByTag("confirmDeleteDialog");
+//                            if (fragment != null) {
+//                                notifyItemChanged(itemHolder.getAdapterPosition());
+//                                fragment.dismiss();
+//                            }
+//                        };
+//
+//                        DialogConfirmDelete dialog = new DialogConfirmDelete(context.getString(R.string.txtDialogDelete), deleteClickListener, cancelClickListener);
+//                        dialog.show(fragmentManager, "confirmDeleteDialog");
+//                    }
+//
+//                    //per disegnare cestino con sfondo rosso durante lo swipe
+//                    @Override
+//                    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+//                        View itemView = viewHolder.itemView;
+//
+//                        if (dX == 0 && !isCurrentlyActive) {
+//                            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, false);
+//                            return;
+//                        }
+//
+//                        Paint paint = new Paint();
+//                        paint.setColor(Color.RED);
+//
+//                        // disegna un rettangolo nella posizione vuota lasciata dallo swipe verso sinistra
+//                        c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom(), paint);
+//
+//                        // disegna l'icona
+//                        Drawable icon = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.ic_delete_black);
+//                        if (icon != null) {
+//                            int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+//                            int iconTop = itemView.getTop() + iconMargin;
+//                            int iconBottom = iconTop + icon.getIntrinsicHeight();
+//
+//                            int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+//                            int iconRight = itemView.getRight() - iconMargin;
+//
+//                            icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+//                            icon.draw(c);
+//                        }
+//                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//                    }
+//                });
+//                swipeDelete.attachToRecyclerView(rcvEntities);

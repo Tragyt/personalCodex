@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="Autofill,LabelFor" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstTemplateSections"
         android:layout_width="407dp"
         android:layout_height="515dp"
@@ -60,5 +60,5 @@
         app:layout_constraintVertical_bias="0.261"
         android:divider="@android:color/transparent">
 
-    </ListView>
+    </androidx.recyclerview.widget.RecyclerView>
 </androidx.constraintlayout.widget.ConstraintLayout>

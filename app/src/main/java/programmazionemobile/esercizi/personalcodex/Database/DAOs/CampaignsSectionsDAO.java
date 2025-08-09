@@ -1,7 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Database.DAOs;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -13,10 +12,10 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAI
 @Dao
 public interface CampaignsSectionsDAO {
     @Insert
-    void insert(FD02_CAMPAIGNS_SECTIONS section);
+    long insert(FD02_CAMPAIGNS_SECTIONS section);
 
-    @Delete
-    void delete(FD02_CAMPAIGNS_SECTIONS section);
+    @Query("DELETE FROM fd02_campaigns_sections WHERE ID = :idSection")
+    void delete(long idSection);
 
     @Update
     void update(FD02_CAMPAIGNS_SECTIONS section);

@@ -1,7 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Database.DAOs;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -15,8 +14,8 @@ public interface TemplatesDAO {
     @Insert
     long insert(TP01_TEMPLATES template);
 
-    @Delete
-    void delete(TP01_TEMPLATES template);
+    @Query("DELETE FROM tp01_templates WHERE id = :idTemplate")
+    void delete(long idTemplate);
 
     @Update
     void update(TP01_TEMPLATES template);

@@ -31,14 +31,19 @@ public class CampaignSectionsAccess {
         return ret;
     }
 
-    public void insert(FD02_CAMPAIGNS_SECTIONS section) {
-        FutureTask<?> task = new FutureTask<>(() -> {
-            dao.insert(section);
-            return null;
-        });
+    public long insert(FD02_CAMPAIGNS_SECTIONS section) {
+        FutureTask<Long> task = new FutureTask<>(()-> dao.insert(section));
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
+
+        long ret;
+        try {
+            ret = task.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ret;
     }
 
     public void update(FD02_CAMPAIGNS_SECTIONS section){
@@ -47,6 +52,15 @@ public class CampaignSectionsAccess {
             return null;
         });
 
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+    }
+
+    public void delete(long idSection){
+        FutureTask<?> task = new FutureTask<>(() -> {
+            dao.delete(idSection);
+            return null;
+        });
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
     }

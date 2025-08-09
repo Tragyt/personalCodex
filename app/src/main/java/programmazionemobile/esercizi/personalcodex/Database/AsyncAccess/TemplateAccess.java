@@ -45,9 +45,9 @@ public class TemplateAccess {
         return ret;
     }
 
-    public void delete(TP01_TEMPLATES template){
+    public void delete(long idTemplate){
         FutureTask<?> task = new FutureTask<>(() -> {
-            dao.delete(template);
+            dao.delete(idTemplate);
             return null;
         });
 

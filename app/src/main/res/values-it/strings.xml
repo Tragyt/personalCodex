@@ -13,6 +13,7 @@
 
     <string name="remove_section">rimuovi sezione</string>
     <string name="new_section">Nuova Sezione</string>
+    <string name="newSection_title">Tieni premuto per modificare</string>
 
     <string name="btnSettings_description">Impostazioni</string>
     <string name="btnNewCampaign_description">Nuovo Elemento</string>
@@ -27,4 +28,8 @@
     <string name="editTitle_dialog">modifica titolo</string>
     <string name="btnConfirm_dialog">Conferma</string>
     <string name="btnCancle_dialog">Annulla</string>
+
+    <string name="txtDialogDelete">Eliminare definitivamente?</string>
+    <string name="txtDialogWarning">Attenzione</string>
+    <string name="txtDialogWarningDeleteSection">Eliminare tutti i figli della sezione prima</string>
 </resources>

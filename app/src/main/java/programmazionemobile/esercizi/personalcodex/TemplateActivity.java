@@ -10,6 +10,8 @@ import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -43,23 +45,13 @@ public class TemplateActivity extends AppCompatActivity {
 
             sectionAccess = new SectionAccess(dao);
             sections = sectionAccess.getAll(template.ID);
-            adapter = new TemplateSectionsAdapter(this, sections, sectionAccess);
-            ListView lstTemplateSections = findViewById(R.id.lstTemplateSections);
+            adapter = new TemplateSectionsAdapter(sections, sectionAccess, template.ID);
+            RecyclerView lstTemplateSections = findViewById(R.id.lstTemplateSections);
+            lstTemplateSections.setLayoutManager(new LinearLayoutManager(this));
             lstTemplateSections.setAdapter(adapter);
 
-            View footerButton = getLayoutInflater().inflate(R.layout.footer_button_add, null);
-            lstTemplateSections.addFooterView(footerButton);
-            footerButton.findViewById(R.id.btnAddSection).setOnClickListener(view -> {
-                TP02_SECTIONS section = new TP02_SECTIONS(getString(R.string.new_section), template.ID);
-                runOnUiThread(() -> {
-                    sections.clear();
-                    sections.addAll(sectionAccess.insertAndGetAll(section));
-                    adapter.notifyDataSetChanged();
-                });
-            });
-
             findViewById(R.id.btnDeleteTemplate).setOnClickListener(view -> {
-                templateAccess.delete(template);
+                templateAccess.delete(template.ID);
                 setResult(RESULT_OK);
                 finish();
             });

@@ -44,5 +44,15 @@
             android:text="@string/btnCancle_dialog"
             android:textColor="@android:color/black" />
 
+        <Button
+            android:id="@+id/btnDeleteDialog"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/red"
+            android:text="@string/btnDelete_description"
+            android:textColor="@android:color/black" />
+
     </LinearLayout>
 </LinearLayout>

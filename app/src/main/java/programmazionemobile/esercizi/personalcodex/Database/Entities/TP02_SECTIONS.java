@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey;
 public class TP02_SECTIONS {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
-    public int ID;
+    public long ID;
 
     @ColumnInfo(name = "TP02_NAME")
     public String TP02_NAME;
