@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignSectionsAdapter;
+import programmazionemobile.esercizi.personalcodex.Adapters.Links.CampaingsSectionsNewLinkAdapter;
+import programmazionemobile.esercizi.personalcodex.Adapters.Links.EntitiesNewLinkAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
@@ -41,6 +43,7 @@ public class CampaignActivity extends AppCompatActivity {
         //dati intent
         Intent i = getIntent();
         FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) i.getSerializableExtra("campaign");
+        CampaignsHelper.CampaignRole role = (CampaignsHelper.CampaignRole) i.getSerializableExtra("role");
         if (campaign != null) {
 
             //setup activity schermo
@@ -70,28 +73,42 @@ public class CampaignActivity extends AppCompatActivity {
             //setup recyclerview
             RecyclerView expandableListView = findViewById(R.id.lvCampaign);
             expandableListView.setLayoutManager(new LinearLayoutManager(this));
+            if(role== CampaignsHelper.CampaignRole.VIEW)
             campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID, launcher);
+            else if (role== CampaignsHelper.CampaignRole.NEW_LINK) {
+                EntitiesNewLinkAdapter.OnEntityClickListener listener = entity -> {
+                    Intent intent = new Intent();
+                    intent.putExtra("entity", entity);
+                    setResult(CampaignActivity.RESULT_OK, intent);
+                    finish();
+                };
+                campaignSectionsAdapter = new CampaingsSectionsNewLinkAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID, launcher, listener);
+            }
+
+
             expandableListView.setAdapter(campaignSectionsAdapter);
 
             //setup titolo
             TextView txtTile = findViewById(R.id.txtCampaignTitle);
             txtTile.setText(campaign.FD01_NAME);
 
-            //setup dialog modifica titolo
-            View.OnClickListener clickListener = v -> { //modifica titolo alla conferma
-                DialogEdit fragment = (DialogEdit) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
-                if (fragment != null) {
-                    campaign.FD01_NAME = fragment.getText();
-                    campaignsAccess.update(campaign);
-                    txtTile.setText(campaign.FD01_NAME);
-                    fragment.dismiss();
-                }
-            };
-            txtTile.setOnLongClickListener(view -> { //apertura dialog tenendo premuto
-                DialogEdit dialog = new DialogEdit(campaign.FD01_NAME, clickListener);
-                dialog.show(getSupportFragmentManager(), "EditTitleDialog");
-                return true;
-            });
+            if (role == CampaignsHelper.CampaignRole.VIEW) {
+                //setup dialog modifica titolo
+                View.OnClickListener clickListener = v -> { //modifica titolo alla conferma
+                    DialogEdit fragment = (DialogEdit) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
+                    if (fragment != null) {
+                        campaign.FD01_NAME = fragment.getText();
+                        campaignsAccess.update(campaign);
+                        txtTile.setText(campaign.FD01_NAME);
+                        fragment.dismiss();
+                    }
+                };
+                txtTile.setOnLongClickListener(view -> { //apertura dialog tenendo premuto
+                    DialogEdit dialog = new DialogEdit(campaign.FD01_NAME, clickListener);
+                    dialog.show(getSupportFragmentManager(), "EditTitleDialog");
+                    return true;
+                });
+            }
 
             findViewById(R.id.btnBackCampaign).setOnClickListener(view -> finish());
         } else {

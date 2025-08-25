@@ -41,4 +41,9 @@ public class CampaignsHelper {
             return section;
         }
     }
+
+    public enum CampaignRole{
+        VIEW,
+        NEW_LINK
+    }
 }

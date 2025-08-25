@@ -19,7 +19,7 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class EntitiesAdapter extends RecyclerView.Adapter<EntitiesAdapter.ItemViewHolder> {
 
-    private final ArrayList<FD03_ENTITIES> entities;
+    protected final ArrayList<FD03_ENTITIES> entities;
     private final ActivityResultLauncher<Intent> launcher;
 
     public EntitiesAdapter(ArrayList<FD03_ENTITIES> entities, ActivityResultLauncher<Intent> launcher) {

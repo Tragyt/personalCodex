@@ -1,5 +1,6 @@
 package programmazionemobile.esercizi.personalcodex;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -168,6 +169,23 @@ public class EntityActivity extends AppCompatActivity {
                 btnSaveDescription.setVisibility(View.GONE);
                 txtDescription.setVisibility(View.VISIBLE);
                 btnEditDescription.setVisibility(View.VISIBLE);
+            });
+
+            //creazione links
+            ActivityResultLauncher<Intent> newLinkLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            if(data!=null){
+                                FD03_ENTITIES lnkEntity = (FD03_ENTITIES) data.getSerializableExtra("entity");
+                            }
+                        }
+                    }
+            );
+
+            findViewById(R.id.btnAddLink).setOnClickListener(view -> {
+
             });
 
             findViewById(R.id.btnBackEntity).setOnClickListener(view -> finish());

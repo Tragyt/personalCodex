@@ -24,6 +24,7 @@
     <string name="imgEntity_description">Entity picture</string>
     <string name="icExpandable_description">expandable menu</string>
     <string name="btnEditDescription_description">enable edit description</string>
+    <string name="btnAddLink_description">add link</string>
 
     <string name="editTitle_dialog">edit title</string>
     <string name="btnConfirm_dialog">Confirm</string>
@@ -35,6 +36,7 @@
     <string name="txtDialogWarning">Warning</string>
     <string name="txtDialogWarningDeleteSection">Remove all section\'s children before</string>
     <string name="txtDescription">Description</string>
+    <string name="txtLinks">Links</string>
 
     <string name="hintEntityDescription">Insert description</string>
 </resources>

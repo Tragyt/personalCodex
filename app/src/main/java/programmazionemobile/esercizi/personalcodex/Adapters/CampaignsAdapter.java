@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import programmazionemobile.esercizi.personalcodex.CampaignActivity;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
+import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.R;
-import programmazionemobile.esercizi.personalcodex.TemplateActivity;
 
 public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.ViewHolder> {
     private final ArrayList<FD01_CAMPAIGNS> dataSet;
@@ -66,6 +66,7 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
             Context context = holder.getCardView().getContext();
             Intent i = new Intent(context, CampaignActivity.class);
             i.putExtra("campaign", campaign);
+            i.putExtra("role", CampaignsHelper.CampaignRole.VIEW);
             activityResultLauncher.launch(i);
         });
     }

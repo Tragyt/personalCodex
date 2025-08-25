@@ -31,12 +31,12 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<CampaignsHelper.SectionEntities> sectionsEntities;
+    protected ArrayList<CampaignsHelper.SectionEntities> sectionsEntities;
     private final EntitiesAccess entitiesAccess;
     private final CampaignSectionsAccess sectionAccess;
     private final FragmentManager fragmentManager;
     private final long campaignId;
-    private final ActivityResultLauncher<Intent> launcher;
+    protected final ActivityResultLauncher<Intent> launcher;
 
     public CampaignSectionsAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities, EntitiesAccess entitiesAccess, CampaignSectionsAccess sectionAccess, FragmentManager fragmentManager, long campaignId, ActivityResultLauncher<Intent> launcher) {
         this.sectionsEntities = sectionsEntities;
@@ -67,49 +67,24 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    protected ConstraintLayout cvSectionEntity;
+    private ItemViewHolder itemHolder;
+    private TextView txtCampaignSection;
+    private ConstraintLayout cvSection;
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ItemViewHolder) { //item normale
-            ItemViewHolder itemHolder = (ItemViewHolder) holder;
-
-            //selezione dati
+        if (holder instanceof ItemViewHolder) {
             CampaignsHelper.SectionEntities sectionEntity = sectionsEntities.get(position);
-            FD02_CAMPAIGNS_SECTIONS section = sectionEntity.getSection();
             ArrayList<FD03_ENTITIES> entities = sectionEntity.getEntities();
+            FD02_CAMPAIGNS_SECTIONS section = sectionEntity.getSection();
 
-            //selezione views
-            ConstraintLayout cvSectionEntity = itemHolder.getLayout();
-            TextView txtCampaignSection = cvSectionEntity.findViewById(R.id.txtCampaignSection);
-            ImageView imgArrow = cvSectionEntity.findViewById(R.id.imgArrow);
-            RecyclerView rcvEntities = cvSectionEntity.findViewById(R.id.rcvEntities);
-            ConstraintLayout cvSection = cvSectionEntity.findViewById(R.id.cvSection);
+            EntitiesAdapter entitiesAdapter = new EntitiesAdapter(entities, launcher);
+            bind(holder, section, sectionEntity, entitiesAdapter);
+
             Context context = cvSectionEntity.getContext();
-
-            txtCampaignSection.setText(section.FD02_NAME);
-
-            //gestione espansione
-            if (sectionEntity.isExpanded()) {
-                imgArrow.setImageResource(R.drawable.expandable_list_up);
-
-                //setup reciclerview figli
-                rcvEntities.setVisibility(View.VISIBLE);
-                EntitiesAdapter entitiesAdapter = new EntitiesAdapter(entities, launcher);
-                rcvEntities.setLayoutManager(new LinearLayoutManager(context));
-                rcvEntities.setHasFixedSize(true);
-                rcvEntities.setAdapter(entitiesAdapter);
-            } else {
-                imgArrow.setImageResource(R.drawable.expandable_list_down);
-                rcvEntities.setVisibility(View.GONE);
-            }
-
-            //espandi o riduci al tap
-            cvSection.setOnClickListener(view -> {
-                sectionEntity.expand_reduce();
-                notifyItemChanged(itemHolder.getAdapterPosition());
-            });
-
             //creazione nuova entity
-            cvSectionEntity.findViewById(R.id.btnAddEntity).setOnClickListener(view -> {
+            ImageButton btnAddEntity = cvSectionEntity.findViewById(R.id.btnAddEntity);
+            btnAddEntity.setOnClickListener(view -> {
                 FD03_ENTITIES entity = new FD03_ENTITIES(section.ID, context.getString(R.string.btnNewCampaign_description));
                 entity.ID = entitiesAccess.insert(entity);
 
@@ -159,11 +134,46 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                 notifyItemInserted(footerHolder.getAdapterPosition());
             });
         }
+
+    }
+
+    protected void bind(RecyclerView.ViewHolder holder, FD02_CAMPAIGNS_SECTIONS section, CampaignsHelper.SectionEntities sectionEntity, EntitiesAdapter entitiesAdapter) {
+        cvSectionEntity = itemHolder.getLayout();
+        itemHolder = (ItemViewHolder) holder;
+        txtCampaignSection = cvSectionEntity.findViewById(R.id.txtCampaignSection);
+        cvSection = cvSectionEntity.findViewById(R.id.cvSection);
+
+        Context context = cvSectionEntity.getContext();
+        ImageView imgArrow = cvSectionEntity.findViewById(R.id.imgArrow);
+        RecyclerView rcvEntities = cvSectionEntity.findViewById(R.id.rcvEntities);
+        txtCampaignSection.setText(section.FD02_NAME);
+
+        //gestione espansione
+        if (sectionEntity.isExpanded()) {
+            imgArrow.setImageResource(R.drawable.expandable_list_up);
+
+            //setup reciclerview figli
+            rcvEntities.setVisibility(View.VISIBLE);
+
+            rcvEntities.setLayoutManager(new LinearLayoutManager(context));
+            rcvEntities.setHasFixedSize(true);
+            rcvEntities.setAdapter(entitiesAdapter);
+        } else {
+            imgArrow.setImageResource(R.drawable.expandable_list_down);
+            rcvEntities.setVisibility(View.GONE);
+        }
+
+        //espandi o riduci al tap
+        cvSection.setOnClickListener(view -> {
+            sectionEntity.expand_reduce();
+            notifyItemChanged(itemHolder.getAdapterPosition());
+        });
     }
 
     @Override
     public int getItemCount() {
-        return sectionsEntities.size() + 1;
+        int size = sectionsEntities.size();
+        return size + 1;
     }
 
     @Override

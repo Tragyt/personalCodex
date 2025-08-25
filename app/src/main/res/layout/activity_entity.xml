@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <ScrollView
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/clEntity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -41,6 +40,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/imgEntity" />
 
             <LinearLayout
+                android:id="@+id/lytDescriptionEntity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -69,15 +69,16 @@
                     <ImageButton
                         android:id="@+id/btnEditDescription"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="@string/btnEditDescription_description"
                         app:srcCompat="@drawable/ic_edit" />
+
                     <ImageButton
                         android:id="@+id/btnSaveDescription"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="@string/btnEditDescription_description"
@@ -89,15 +90,59 @@
                     android:id="@+id/txtEntityDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"/>
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="6dp"
+                    android:textSize="18sp" />
+
                 <EditText
                     android:id="@+id/txtEntityDescriptionEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
+                    android:layout_marginStart="6dp"
                     android:hint="@string/hintEntityDescription"
-                    tools:ignore="Autofill"
-                    android:layout_marginStart="6dp"/>
+                    android:inputType="textMultiLine"
+                    android:minHeight="48dp"
+                    tools:ignore="Autofill" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lytDescriptionEntity">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/yellow"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="4"
+                        android:text="@string/txtLinks"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnAddLink"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/btnAddLink_description"
+                        app:srcCompat="@drawable/ic_plus"
+                        app:tint="@color/black" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -110,10 +155,10 @@
         android:layout_height="51dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:contentDescription="@string/btnBack_description"
         android:background="@drawable/roundcorner_yellow"
+        android:contentDescription="@string/btnBack_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_back"/>
+        app:srcCompat="@drawable/ic_back" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

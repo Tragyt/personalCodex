@@ -24,7 +24,8 @@
         <activity android:name=".TemplatesActivity"/>
         <activity android:name=".TemplateActivity"/>
         <activity android:name=".CampaignActivity"/>
-        <activity android:name=".EntityActivity"/>
+        <activity android:name=".EntityActivity"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>
