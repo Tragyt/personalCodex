@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -30,6 +32,8 @@ import programmazionemobile.esercizi.personalcodex.Fragments.DialogEdit;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 
 public class CampaignActivity extends AppCompatActivity {
+    private CampaignSectionsAdapter campaignSectionsAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +53,6 @@ public class CampaignActivity extends AppCompatActivity {
             });
 
             //setup dati
-            ArrayList<CampaignsHelper.SectionEntities> lstItems = new ArrayList<>();
             MyDatabase db = MyDatabase.getInstance(this);
             CampaignsSectionsDAO sectionsDao = db.campaignsSectionsDAO();
             CampaignSectionsAccess sectionAccess = new CampaignSectionsAccess(sectionsDao);
@@ -59,14 +62,15 @@ public class CampaignActivity extends AppCompatActivity {
             CampaignsAccess campaignsAccess = new CampaignsAccess(campaignsDAO);
 
             //lista sezioni
-            ArrayList<FD02_CAMPAIGNS_SECTIONS> sections = sectionAccess.getAll(campaign.ID);
-            for (FD02_CAMPAIGNS_SECTIONS section : sections)
-                lstItems.add(new CampaignsHelper.SectionEntities(section, new ArrayList<>(entitiesAccess.getAll(section.ID))));
+            ArrayList<CampaignsHelper.SectionEntities> lstItems = getSections(sectionAccess, campaign, entitiesAccess);
+
+            //intent launcher da passare all'adapter
+            ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> updateAdapter(getSections(sectionAccess, campaign, entitiesAccess)));
 
             //setup recyclerview
             RecyclerView expandableListView = findViewById(R.id.lvCampaign);
             expandableListView.setLayoutManager(new LinearLayoutManager(this));
-            CampaignSectionsAdapter campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID);
+            campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID, launcher);
             expandableListView.setAdapter(campaignSectionsAdapter);
 
             //setup titolo
@@ -94,5 +98,17 @@ public class CampaignActivity extends AppCompatActivity {
             finish();
         }
 
+    }
+
+    private ArrayList<CampaignsHelper.SectionEntities> getSections(CampaignSectionsAccess sectionAccess, FD01_CAMPAIGNS campaign, EntitiesAccess entitiesAccess) {
+        ArrayList<CampaignsHelper.SectionEntities> ret = new ArrayList<>();
+        ArrayList<FD02_CAMPAIGNS_SECTIONS> sections = sectionAccess.getAll(campaign.ID);
+        for (FD02_CAMPAIGNS_SECTIONS section : sections)
+            ret.add(new CampaignsHelper.SectionEntities(section, new ArrayList<>(entitiesAccess.getAll(section.ID))));
+        return ret;
+    }
+
+    private void updateAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionEntities) {
+        campaignSectionsAdapter.updateData(sectionEntities);
     }
 }

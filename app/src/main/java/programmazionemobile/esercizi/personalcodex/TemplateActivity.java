@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,10 +23,6 @@ import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 
 public class TemplateActivity extends AppCompatActivity {
 
-    private SectionAccess sectionAccess;
-    private TemplateSectionsAdapter adapter;
-    private ArrayList<TP02_SECTIONS> sections;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +37,9 @@ public class TemplateActivity extends AppCompatActivity {
             SectionsDAO dao = db.sectionsDAO();
             TemplateAccess templateAccess = new TemplateAccess(db.templatesDAO());
 
-            sectionAccess = new SectionAccess(dao);
-            sections = sectionAccess.getAll(template.ID);
-            adapter = new TemplateSectionsAdapter(sections, sectionAccess, template.ID);
+            SectionAccess sectionAccess = new SectionAccess(dao);
+            ArrayList<TP02_SECTIONS> sections = sectionAccess.getAll(template.ID);
+            TemplateSectionsAdapter adapter = new TemplateSectionsAdapter(sections, sectionAccess, template.ID);
             RecyclerView lstTemplateSections = findViewById(R.id.lstTemplateSections);
             lstTemplateSections.setLayoutManager(new LinearLayoutManager(this));
             lstTemplateSections.setAdapter(adapter);

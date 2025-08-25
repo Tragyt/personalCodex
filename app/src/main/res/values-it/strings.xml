@@ -24,12 +24,18 @@
     <string name="btnAddEntity_description">Nuovo elemento</string>
     <string name="imgEntity_description">immagine dell\'entità</string>
     <string name="icExpandable_description">menu espandibile</string>
+    <string name="btnEditDescription_description">abilita modifica descrizione</string>
 
     <string name="editTitle_dialog">modifica titolo</string>
     <string name="btnConfirm_dialog">Conferma</string>
     <string name="btnCancle_dialog">Annulla</string>
+    <string name="btnSelectImg_dialog">Seleziona dalla Galleria</string>
+    <string name="btnResetImg_dialog">Ripristina Immagine</string>
 
     <string name="txtDialogDelete">Eliminare definitivamente?</string>
     <string name="txtDialogWarning">Attenzione</string>
     <string name="txtDialogWarningDeleteSection">Eliminare tutti i figli della sezione prima</string>
+    <string name="txtDescription">Descrizione</string>
+
+    <string name="hintEntityDescription">Inserire descrizione</string>
 </resources>

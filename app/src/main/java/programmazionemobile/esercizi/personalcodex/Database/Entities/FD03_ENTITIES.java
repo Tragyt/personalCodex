@@ -32,4 +32,7 @@ public class FD03_ENTITIES implements Serializable {
         this.FD03_SECTION_FD02 = FD03_SECTION_FD02;
         this.FD03_NAME = FD03_NAME;
     }
+
+    @ColumnInfo(name = "FD03_DESCRIPTION")
+    public String FD03_DESCRIPTION;
 }

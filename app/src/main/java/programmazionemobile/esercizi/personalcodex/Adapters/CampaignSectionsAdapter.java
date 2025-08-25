@@ -1,5 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Adapters;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
@@ -29,18 +31,27 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final ArrayList<CampaignsHelper.SectionEntities> sectionsEntities;
+    private ArrayList<CampaignsHelper.SectionEntities> sectionsEntities;
     private final EntitiesAccess entitiesAccess;
     private final CampaignSectionsAccess sectionAccess;
     private final FragmentManager fragmentManager;
     private final long campaignId;
+    private final ActivityResultLauncher<Intent> launcher;
 
-    public CampaignSectionsAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities, EntitiesAccess entitiesAccess, CampaignSectionsAccess sectionAccess, FragmentManager fragmentManager, long campaignId) {
+    public CampaignSectionsAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities, EntitiesAccess entitiesAccess, CampaignSectionsAccess sectionAccess, FragmentManager fragmentManager, long campaignId, ActivityResultLauncher<Intent> launcher) {
         this.sectionsEntities = sectionsEntities;
         this.entitiesAccess = entitiesAccess;
         this.sectionAccess = sectionAccess;
         this.fragmentManager = fragmentManager;
         this.campaignId = campaignId;
+        this.launcher = launcher;
+    }
+
+    //potrebbe essere lento
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities) {
+        this.sectionsEntities = sectionsEntities;
+        notifyDataSetChanged();
     }
 
 
@@ -82,7 +93,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                 //setup reciclerview figli
                 rcvEntities.setVisibility(View.VISIBLE);
-                EntitiesAdapter entitiesAdapter = new EntitiesAdapter(entities);
+                EntitiesAdapter entitiesAdapter = new EntitiesAdapter(entities, launcher);
                 rcvEntities.setLayoutManager(new LinearLayoutManager(context));
                 rcvEntities.setHasFixedSize(true);
                 rcvEntities.setAdapter(entitiesAdapter);
@@ -101,12 +112,10 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
             cvSectionEntity.findViewById(R.id.btnAddEntity).setOnClickListener(view -> {
                 FD03_ENTITIES entity = new FD03_ENTITIES(section.ID, context.getString(R.string.btnNewCampaign_description));
                 entity.ID = entitiesAccess.insert(entity);
-                sectionEntity.add(entity);
-                notifyItemChanged(itemHolder.getAdapterPosition());
 
                 Intent intent = new Intent(context, EntityActivity.class);
                 intent.putExtra("entity", entity);
-                context.startActivity(intent);
+                launcher.launch(intent);
             });
 
             //modifica sezione tenendo premuto
@@ -121,7 +130,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                         fragment.dismiss();
                     }
                 };
-                //click listenere elimina
+                //click listener elimina
                 View.OnClickListener deleteClickListener = v -> {
                     DialogEdit fragment = (DialogEdit) fragmentManager.findFragmentByTag("editSectionDialog");
                     if (fragment != null) {
