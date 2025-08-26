@@ -22,4 +22,7 @@ public interface CampaignsDAO {
 
     @Query("SELECT * FROM FD01_CAMPAIGNS ORDER BY ID")
     List<FD01_CAMPAIGNS> getAll();
+
+    @Query("SELECT * FROM FD01_CAMPAIGNS WHERE ID = :id LIMIT 1")
+    FD01_CAMPAIGNS get(long id);
 }

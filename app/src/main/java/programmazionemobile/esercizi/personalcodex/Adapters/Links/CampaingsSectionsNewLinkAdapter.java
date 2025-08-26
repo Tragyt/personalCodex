@@ -21,15 +21,21 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class CampaingsSectionsNewLinkAdapter extends CampaignSectionsAdapter {
     private final EntitiesNewLinkAdapter.OnEntityClickListener listener;
+    private final FD03_ENTITIES entity;
 
-    public CampaingsSectionsNewLinkAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities, EntitiesAccess entitiesAccess, CampaignSectionsAccess sectionAccess, FragmentManager fragmentManager, long campaignId, ActivityResultLauncher<Intent> launcher, EntitiesNewLinkAdapter.OnEntityClickListener listener) {
+    public CampaingsSectionsNewLinkAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities, EntitiesAccess entitiesAccess,
+                                           CampaignSectionsAccess sectionAccess, FragmentManager fragmentManager, long campaignId,
+                                           ActivityResultLauncher<Intent> launcher, EntitiesNewLinkAdapter.OnEntityClickListener listener, FD03_ENTITIES entity) {
         super(sectionsEntities, entitiesAccess, sectionAccess, fragmentManager, campaignId, launcher);
         this.listener = listener;
+        this.entity = entity;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         CampaignsHelper.SectionEntities sectionEntity = sectionsEntities.get(position);
+        if(entity.FD03_SECTION_FD02 == sectionEntity.getSection().ID)
+            sectionEntity.removeEntity(entity.ID);
         ArrayList<FD03_ENTITIES> entities = sectionEntity.getEntities();
         FD02_CAMPAIGNS_SECTIONS section = sectionEntity.getSection();
 

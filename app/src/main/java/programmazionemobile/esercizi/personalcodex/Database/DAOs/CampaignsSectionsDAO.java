@@ -22,4 +22,7 @@ public interface CampaignsSectionsDAO {
 
     @Query("SELECT * FROM FD02_CAMPAIGNS_SECTIONS WHERE FD02_CAMPAIGN_FD01 = :idCampaign ORDER BY ID")
     List<FD02_CAMPAIGNS_SECTIONS> getAll(long idCampaign);
+
+    @Query("SELECT * FROM FD02_CAMPAIGNS_SECTIONS WHERE ID = :id LIMIT 1")
+    FD02_CAMPAIGNS_SECTIONS get(long id);
 }

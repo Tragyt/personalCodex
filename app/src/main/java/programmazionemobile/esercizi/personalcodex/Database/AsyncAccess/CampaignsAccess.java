@@ -65,4 +65,19 @@ public class CampaignsAccess {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
     }
+
+    public FD01_CAMPAIGNS get(long idCampaign){
+        FutureTask<FD01_CAMPAIGNS> task = new FutureTask<>(()-> dao.get(idCampaign));
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+
+        FD01_CAMPAIGNS ret;
+        try {
+            ret = task.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ret;
+    }
 }

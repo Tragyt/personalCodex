@@ -68,9 +68,8 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     protected ConstraintLayout cvSectionEntity;
-    private ItemViewHolder itemHolder;
-    private TextView txtCampaignSection;
     private ConstraintLayout cvSection;
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
@@ -101,7 +100,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                     if (fragment != null) {
                         section.FD02_NAME = fragment.getText();
                         sectionAccess.update(section);
-                        txtCampaignSection.setText(section.FD02_NAME);
+                        notifyItemChanged(holder.getAdapterPosition());
                         fragment.dismiss();
                     }
                 };
@@ -112,7 +111,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                         if (sectionEntity.getEntities().isEmpty()) {
                             sectionAccess.delete(section.ID);
                             sectionsEntities.remove(sectionEntity);
-                            notifyItemRemoved(itemHolder.getAdapterPosition());
+                            notifyItemRemoved(holder.getAdapterPosition());
                         } else {
                             new AlertDialog.Builder(context).setTitle(context.getString(R.string.txtDialogWarning)).setMessage(context.getString(R.string.txtDialogWarningDeleteSection)).setPositiveButton(android.R.string.ok, null).show();
                         }
@@ -138,15 +137,13 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     protected void bind(RecyclerView.ViewHolder holder, FD02_CAMPAIGNS_SECTIONS section, CampaignsHelper.SectionEntities sectionEntity, EntitiesAdapter entitiesAdapter) {
-        cvSectionEntity = itemHolder.getLayout();
-        itemHolder = (ItemViewHolder) holder;
-        txtCampaignSection = cvSectionEntity.findViewById(R.id.txtCampaignSection);
+        cvSectionEntity = ((ItemViewHolder)holder).getLayout();
         cvSection = cvSectionEntity.findViewById(R.id.cvSection);
 
         Context context = cvSectionEntity.getContext();
         ImageView imgArrow = cvSectionEntity.findViewById(R.id.imgArrow);
         RecyclerView rcvEntities = cvSectionEntity.findViewById(R.id.rcvEntities);
-        txtCampaignSection.setText(section.FD02_NAME);
+        ((TextView)cvSectionEntity.findViewById(R.id.txtCampaignSection)).setText(section.FD02_NAME);
 
         //gestione espansione
         if (sectionEntity.isExpanded()) {
@@ -166,7 +163,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
         //espandi o riduci al tap
         cvSection.setOnClickListener(view -> {
             sectionEntity.expand_reduce();
-            notifyItemChanged(itemHolder.getAdapterPosition());
+            notifyItemChanged(holder.getAdapterPosition());
         });
     }
 

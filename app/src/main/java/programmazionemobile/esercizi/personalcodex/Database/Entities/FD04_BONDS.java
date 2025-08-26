@@ -17,6 +17,9 @@ public class FD04_BONDS {
     @ColumnInfo(name = "FD04_ENTITY2_FD03")
     public long FD04_ENTITY2_FD03;
 
+    @ColumnInfo(name = "FD04_DESCRIPTION")
+    public String FD04_DESCRIPTION;
+
     public FD04_BONDS(long FD04_ENTITY1_FD03, long FD04_ENTITY2_FD03) {
         this.FD04_ENTITY1_FD03 = FD04_ENTITY1_FD03;
         this.FD04_ENTITY2_FD03 = FD04_ENTITY2_FD03;

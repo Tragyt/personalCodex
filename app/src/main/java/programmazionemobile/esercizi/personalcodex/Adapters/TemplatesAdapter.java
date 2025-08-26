@@ -24,6 +24,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAI
 import programmazionemobile.esercizi.personalcodex.Database.Entities.TP01_TEMPLATES;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.TP02_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
+import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.TemplatesHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 import programmazionemobile.esercizi.personalcodex.TemplateActivity;
@@ -80,6 +81,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.View
 
                 Intent i = new Intent(context, CampaignActivity.class);
                 i.putExtra("campaign", newCampaign);
+                i.putExtra("role", CampaignsHelper.CampaignRole.VIEW);
                 this.activityResultLauncher.launch(i);
             }
         });

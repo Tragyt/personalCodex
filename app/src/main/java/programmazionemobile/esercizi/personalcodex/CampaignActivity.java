@@ -29,6 +29,7 @@ import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectio
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogEdit;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
@@ -70,29 +71,14 @@ public class CampaignActivity extends AppCompatActivity {
             //intent launcher da passare all'adapter
             ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> updateAdapter(getSections(sectionAccess, campaign, entitiesAccess)));
 
-            //setup recyclerview
             RecyclerView expandableListView = findViewById(R.id.lvCampaign);
-            expandableListView.setLayoutManager(new LinearLayoutManager(this));
-            if(role== CampaignsHelper.CampaignRole.VIEW)
-            campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID, launcher);
-            else if (role== CampaignsHelper.CampaignRole.NEW_LINK) {
-                EntitiesNewLinkAdapter.OnEntityClickListener listener = entity -> {
-                    Intent intent = new Intent();
-                    intent.putExtra("entity", entity);
-                    setResult(CampaignActivity.RESULT_OK, intent);
-                    finish();
-                };
-                campaignSectionsAdapter = new CampaingsSectionsNewLinkAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID, launcher, listener);
-            }
-
-
-            expandableListView.setAdapter(campaignSectionsAdapter);
-
-            //setup titolo
             TextView txtTile = findViewById(R.id.txtCampaignTitle);
-            txtTile.setText(campaign.FD01_NAME);
-
             if (role == CampaignsHelper.CampaignRole.VIEW) {
+                //setup recyclerview
+                campaignSectionsAdapter = new CampaignSectionsAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID, launcher);
+
+                txtTile.setText(campaign.FD01_NAME);
+
                 //setup dialog modifica titolo
                 View.OnClickListener clickListener = v -> { //modifica titolo alla conferma
                     DialogEdit fragment = (DialogEdit) getSupportFragmentManager().findFragmentByTag("EditTitleDialog");
@@ -108,7 +94,23 @@ public class CampaignActivity extends AppCompatActivity {
                     dialog.show(getSupportFragmentManager(), "EditTitleDialog");
                     return true;
                 });
+            } else if (role == CampaignsHelper.CampaignRole.NEW_LINK){
+                txtTile.setText(getString(R.string.txtNewBond));
+
+                EntitiesNewLinkAdapter.OnEntityClickListener listener = entity -> {
+                    Intent intent = new Intent();
+                    intent.putExtra("entity", entity);
+                    setResult(CampaignActivity.RESULT_OK, intent);
+                    finish();
+                };
+
+                FD03_ENTITIES entity = (FD03_ENTITIES) i.getSerializableExtra("entity");
+                campaignSectionsAdapter = new CampaingsSectionsNewLinkAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID,
+                        launcher, listener, entity);
             }
+
+            expandableListView.setLayoutManager(new LinearLayoutManager(this));
+            expandableListView.setAdapter(campaignSectionsAdapter);
 
             findViewById(R.id.btnBackCampaign).setOnClickListener(view -> finish());
         } else {

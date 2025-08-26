@@ -37,6 +37,7 @@
     <string name="txtDialogWarningDeleteSection">Remove all section\'s children before</string>
     <string name="txtDescription">Description</string>
     <string name="txtLinks">Links</string>
+    <string name="txtNewBond">Select new link</string>
 
     <string name="hintEntityDescription">Insert description</string>
 </resources>

@@ -33,8 +33,8 @@ public class CampaignsHelper {
             return entities;
         }
 
-        public void removeEntity(FD03_ENTITIES entity){
-            entities.remove(entity);
+        public void removeEntity(long idEntity){
+            entities.removeIf(entity -> entity.ID == idEntity);
         }
 
         public FD02_CAMPAIGNS_SECTIONS getSection(){

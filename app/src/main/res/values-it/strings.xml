@@ -38,6 +38,7 @@
     <string name="txtDialogWarningDeleteSection">Eliminare tutti i figli della sezione prima</string>
     <string name="txtDescription">Descrizione</string>
     <string name="txtLinks">Collegamenti</string>
+    <string name="txtNewBond">Seleziona il nuovo collegamento</string>
 
     <string name="hintEntityDescription">Inserire descrizione</string>
 </resources>

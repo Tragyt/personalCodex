@@ -29,12 +29,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.SectionAccess;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.BondsDAO;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectionsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.SectionsDAO;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD04_BONDS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogEdit;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogImage;
+import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 
 public class EntityActivity extends AppCompatActivity {
     private FD03_ENTITIES entity;
@@ -171,7 +183,11 @@ public class EntityActivity extends AppCompatActivity {
                 btnEditDescription.setVisibility(View.VISIBLE);
             });
 
+            //lista links
+
             //creazione links
+            BondsDAO bondsDAO = db.bondsDAO();
+            BondsAccess bondsAccess = new BondsAccess(bondsDAO);
             ActivityResultLauncher<Intent> newLinkLauncher = registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
@@ -179,13 +195,30 @@ public class EntityActivity extends AppCompatActivity {
                             Intent data = result.getData();
                             if(data!=null){
                                 FD03_ENTITIES lnkEntity = (FD03_ENTITIES) data.getSerializableExtra("entity");
+                                if(lnkEntity!=null){
+                                    FD04_BONDS lnk = new FD04_BONDS(entity.ID, lnkEntity.ID);
+                                    bondsAccess.insert(lnk);
+                                    //aggiornare adapter
+                                }
                             }
                         }
                     }
             );
 
-            findViewById(R.id.btnAddLink).setOnClickListener(view -> {
+            CampaignsSectionsDAO sectionsDAO = db.campaignsSectionsDAO();
+            CampaignSectionsAccess sectionAccess = new CampaignSectionsAccess(sectionsDAO);
+            FD02_CAMPAIGNS_SECTIONS section = sectionAccess.get(entity.FD03_SECTION_FD02);
 
+            CampaignsDAO campaignsDAO = db.campaignsDAO();
+            CampaignsAccess campaignsAccess = new CampaignsAccess(campaignsDAO);
+            FD01_CAMPAIGNS campaign = campaignsAccess.get(section.FD02_CAMPAIGN_FD01);
+
+            findViewById(R.id.btnAddLink).setOnClickListener(view -> {
+                Intent intent = new Intent(view.getContext(), CampaignActivity.class);
+                intent.putExtra("campaign", campaign);
+                intent.putExtra("role", CampaignsHelper.CampaignRole.NEW_LINK);
+                intent.putExtra("entity", entity);
+                newLinkLauncher.launch(intent);
             });
 
             findViewById(R.id.btnBackEntity).setOnClickListener(view -> finish());
