@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "programmazionemobile.esercizi.personalcodex"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "programmazionemobile.esercizi.personalcodex"
@@ -39,8 +39,14 @@ dependencies {
     implementation(libs.room.common)
     implementation(libs.room.runtime)
     implementation(libs.cardview)
+    implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }

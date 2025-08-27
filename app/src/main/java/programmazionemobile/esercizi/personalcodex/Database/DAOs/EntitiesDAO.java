@@ -26,5 +26,8 @@ public interface EntitiesDAO {
             "INNER JOIN FD02_CAMPAIGNS_SECTIONS AS SECTION ON SECTION.ID = FD03_SECTION_FD02 " +
             "WHERE SECTION.ID = :idSection AND FD03_NAME LIKE '%' || :name || '%'" +
             "ORDER BY ENTITY.ID")
-    List<FD03_ENTITIES> get(long idSection, String name);
+    List<FD03_ENTITIES> getAll(long idSection, String name);
+
+    @Query("SELECT * FROM FD03_ENTITIES WHERE ID = :idEntity LIMIT 1")
+    FD03_ENTITIES get(long idEntity);
 }

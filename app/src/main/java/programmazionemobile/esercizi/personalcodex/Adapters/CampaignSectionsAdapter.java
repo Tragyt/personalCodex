@@ -100,7 +100,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                     if (fragment != null) {
                         section.FD02_NAME = fragment.getText();
                         sectionAccess.update(section);
-                        notifyItemChanged(holder.getAdapterPosition());
+                        notifyItemChanged(holder.getBindingAdapterPosition());
                         fragment.dismiss();
                     }
                 };
@@ -111,7 +111,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                         if (sectionEntity.getEntities().isEmpty()) {
                             sectionAccess.delete(section.ID);
                             sectionsEntities.remove(sectionEntity);
-                            notifyItemRemoved(holder.getAdapterPosition());
+                            notifyItemRemoved(holder.getBindingAdapterPosition());
                         } else {
                             new AlertDialog.Builder(context).setTitle(context.getString(R.string.txtDialogWarning)).setMessage(context.getString(R.string.txtDialogWarningDeleteSection)).setPositiveButton(android.R.string.ok, null).show();
                         }
@@ -130,7 +130,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                 FD02_CAMPAIGNS_SECTIONS new_section = new FD02_CAMPAIGNS_SECTIONS(view.getContext().getString(R.string.newSection_title), campaignId);
                 new_section.ID = sectionAccess.insert(new_section);
                 sectionsEntities.add(new CampaignsHelper.SectionEntities(new_section, new ArrayList<>()));
-                notifyItemInserted(footerHolder.getAdapterPosition());
+                notifyItemInserted(footerHolder.getBindingAdapterPosition());
             });
         }
 
@@ -163,7 +163,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
         //espandi o riduci al tap
         cvSection.setOnClickListener(view -> {
             sectionEntity.expand_reduce();
-            notifyItemChanged(holder.getAdapterPosition());
+            notifyItemChanged(holder.getBindingAdapterPosition());
         });
     }
 

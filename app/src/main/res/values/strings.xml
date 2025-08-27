@@ -25,6 +25,7 @@
     <string name="icExpandable_description">expandable menu</string>
     <string name="btnEditDescription_description">enable edit description</string>
     <string name="btnAddLink_description">add link</string>
+    <string name="btnEditBond_description">edit link</string>
 
     <string name="editTitle_dialog">edit title</string>
     <string name="btnConfirm_dialog">Confirm</string>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtEntityBond"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:textColor="@color/yellow"/>
+
+        <ImageButton
+            android:id="@+id/btnEditBond"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2"
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/btnEditBond_description"
+            android:src="@drawable/ic_edit"
+            app:tint="@color/yellow" />
+
+        <ImageButton
+            android:id="@+id/btnSaveBond"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/btnEditDescription_description"
+            android:src="@drawable/ic_save"
+            app:tint="@color/yellow" />
+
+        <ImageButton
+            android:id="@+id/btnDeleteBond"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/btnDelete_description"
+            android:src="@drawable/ic_delete_red" />
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/txtBondDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <EditText
+        android:id="@+id/txtBondDescriptionEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:hint="@string/hintEntityDescription" />
+</LinearLayout>

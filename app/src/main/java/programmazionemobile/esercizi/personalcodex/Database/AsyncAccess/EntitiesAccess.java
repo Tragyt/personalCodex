@@ -18,7 +18,7 @@ public class EntitiesAccess {
     }
 
     public ArrayList<FD03_ENTITIES> getAll(long idSection) {
-        FutureTask<List<FD03_ENTITIES>> task = new FutureTask<>(() -> dao.get(idSection, ""));
+        FutureTask<List<FD03_ENTITIES>> task = new FutureTask<>(() -> dao.getAll(idSection, ""));
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
         ArrayList<FD03_ENTITIES> ret;
@@ -63,5 +63,20 @@ public class EntitiesAccess {
         });
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
+    }
+
+    public FD03_ENTITIES get(long id){
+        FutureTask<FD03_ENTITIES> task = new FutureTask<>(() -> dao.get(id));
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+
+        FD03_ENTITIES ret;
+        try {
+            ret = task.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ret;
     }
 }

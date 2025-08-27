@@ -23,12 +23,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
+import programmazionemobile.esercizi.personalcodex.Adapters.BondsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
@@ -183,11 +187,17 @@ public class EntityActivity extends AppCompatActivity {
                 btnEditDescription.setVisibility(View.VISIBLE);
             });
 
-            //lista links
-
-            //creazione links
+            //LINKS
             BondsDAO bondsDAO = db.bondsDAO();
             BondsAccess bondsAccess = new BondsAccess(bondsDAO);
+
+            ArrayList<FD04_BONDS> bonds = bondsAccess.getAll(entity.ID);
+            RecyclerView rcvBonds = findViewById(R.id.rcvBonds);
+            BondsAdapter bondsAdapter = new BondsAdapter(bondsAccess,bonds,entitiesAccess,entity.ID);
+            rcvBonds.setLayoutManager(new LinearLayoutManager(this));
+            rcvBonds.setAdapter(bondsAdapter);
+
+            //creazione links
             ActivityResultLauncher<Intent> newLinkLauncher = registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
