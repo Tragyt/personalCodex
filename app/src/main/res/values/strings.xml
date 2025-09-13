@@ -39,6 +39,7 @@
     <string name="txtDescription">Description</string>
     <string name="txtLinks">Links</string>
     <string name="txtNewBond">Select new link</string>
+    <string name="txtSearch">Search…</string>
 
     <string name="hintEntityDescription">Insert description</string>
 </resources>

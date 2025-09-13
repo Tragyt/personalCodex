@@ -1,5 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -22,7 +21,7 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> {
 
-    private ArrayList<FD04_BONDS> bonds;
+    private final ArrayList<FD04_BONDS> bonds;
     private final BondsAccess bondsAccess;
     private final EntitiesAccess entitiesAccess;
     private final long idEntity;
@@ -32,6 +31,11 @@ public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> 
         this.bonds = bonds;
         this.entitiesAccess = entitiesAccess;
         this.idEntity = idEntity;
+    }
+
+    public void addBond(FD04_BONDS bond) {
+        bonds.add(bond);
+        notifyItemInserted(bonds.size());
     }
 
     @NonNull
@@ -45,16 +49,12 @@ public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FD04_BONDS bond = bonds.get(position);
         FD03_ENTITIES entity = bond.FD04_ENTITY1_FD03 == idEntity ? entitiesAccess.get(bond.FD04_ENTITY2_FD03) : entitiesAccess.get(bond.FD04_ENTITY1_FD03);
-
         holder.getTxtEntityBond().setText(entity.FD03_NAME);
-
-        TextView txtBondDescription = holder.getTxtBondDescription();
-        txtBondDescription.setText(bond.FD04_DESCRIPTION);
-        txtBondDescription.setVisibility(View.VISIBLE);
 
         EditText txtBondDescriptionEdit = holder.getTxtBondDescriptionEdit();
         txtBondDescriptionEdit.setText(bond.FD04_DESCRIPTION);
-        txtBondDescriptionEdit.setVisibility(View.GONE);
+        txtBondDescriptionEdit.setEnabled(false);
+        txtBondDescriptionEdit.setTextColor(Color.WHITE);
 
         ImageButton btnSaveBond = holder.getBtnSaveBond();
         btnSaveBond.setVisibility(View.GONE);
@@ -67,7 +67,7 @@ public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> 
         ImageButton btnDeleteBond = holder.getBtnDeleteBond();
         btnDeleteBond.setVisibility(View.GONE);
         btnDeleteBond.setOnClickListener(v -> {
-            bondsAccess.delete(bond.FD04_ENTITY1_FD03,bond.FD04_ENTITY2_FD03);
+            bondsAccess.delete(bond.FD04_ENTITY1_FD03, bond.FD04_ENTITY2_FD03);
             bonds.removeIf(b -> b.FD04_ENTITY1_FD03 == bond.FD04_ENTITY1_FD03 && b.FD04_ENTITY2_FD03 == bond.FD04_ENTITY2_FD03);
             notifyItemRemoved(holder.getBindingAdapterPosition());
         });
@@ -76,9 +76,8 @@ public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> 
         btnEditBond.setVisibility(View.VISIBLE);
         btnEditBond.setOnClickListener(v -> {
             btnEditBond.setVisibility(View.GONE);
-            txtBondDescription.setVisibility(View.GONE);
             btnSaveBond.setVisibility(View.VISIBLE);
-            txtBondDescriptionEdit.setVisibility(View.VISIBLE);
+            txtBondDescriptionEdit.setEnabled(true);
             btnDeleteBond.setVisibility(View.VISIBLE);
         });
     }
@@ -93,7 +92,6 @@ public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> 
         private final ImageButton btnEditBond;
         private final ImageButton btnSaveBond;
         private final ImageButton btnDeleteBond;
-        private final TextView txtBondDescription;
         private final EditText txtBondDescriptionEdit;
 
         public ViewHolder(@NonNull View itemView) {
@@ -102,7 +100,6 @@ public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> 
             this.btnEditBond = itemView.findViewById(R.id.btnEditBond);
             this.btnSaveBond = itemView.findViewById(R.id.btnSaveBond);
             this.btnDeleteBond = itemView.findViewById(R.id.btnDeleteBond);
-            this.txtBondDescription = itemView.findViewById(R.id.txtBondDescription);
             this.txtBondDescriptionEdit = itemView.findViewById(R.id.txtBondDescriptionEdit);
         }
 
@@ -120,10 +117,6 @@ public class BondsAdapter extends RecyclerView.Adapter<BondsAdapter.ViewHolder> 
 
         public ImageButton getBtnDeleteBond() {
             return btnDeleteBond;
-        }
-
-        public TextView getTxtBondDescription() {
-            return txtBondDescription;
         }
 
         public EditText getTxtBondDescriptionEdit() {

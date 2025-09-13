@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,9 +31,11 @@ import programmazionemobile.esercizi.personalcodex.Fragments.DialogEdit;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 
-public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+    implements Filterable {
 
     protected ArrayList<CampaignsHelper.SectionEntities> sectionsEntities;
+    protected ArrayList<CampaignsHelper.SectionEntities> filteredList;
     private final EntitiesAccess entitiesAccess;
     private final CampaignSectionsAccess sectionAccess;
     private final FragmentManager fragmentManager;
@@ -45,12 +49,14 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.fragmentManager = fragmentManager;
         this.campaignId = campaignId;
         this.launcher = launcher;
+        filteredList = new ArrayList<>(this.sectionsEntities);
     }
 
     //potrebbe essere lento
     @SuppressLint("NotifyDataSetChanged")
     public void updateData(ArrayList<CampaignsHelper.SectionEntities> sectionsEntities) {
         this.sectionsEntities = sectionsEntities;
+        this.filteredList = new ArrayList<>(sectionsEntities);
         notifyDataSetChanged();
     }
 
@@ -73,7 +79,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            CampaignsHelper.SectionEntities sectionEntity = sectionsEntities.get(position);
+            CampaignsHelper.SectionEntities sectionEntity = filteredList.get(position);
             ArrayList<FD03_ENTITIES> entities = sectionEntity.getEntities();
             FD02_CAMPAIGNS_SECTIONS section = sectionEntity.getSection();
 
@@ -110,7 +116,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
                     if (fragment != null) {
                         if (sectionEntity.getEntities().isEmpty()) {
                             sectionAccess.delete(section.ID);
-                            sectionsEntities.remove(sectionEntity);
+                            filteredList.remove(sectionEntity);
                             notifyItemRemoved(holder.getBindingAdapterPosition());
                         } else {
                             new AlertDialog.Builder(context).setTitle(context.getString(R.string.txtDialogWarning)).setMessage(context.getString(R.string.txtDialogWarningDeleteSection)).setPositiveButton(android.R.string.ok, null).show();
@@ -129,7 +135,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
             btnAdd.setOnClickListener(view -> {
                 FD02_CAMPAIGNS_SECTIONS new_section = new FD02_CAMPAIGNS_SECTIONS(view.getContext().getString(R.string.newSection_title), campaignId);
                 new_section.ID = sectionAccess.insert(new_section);
-                sectionsEntities.add(new CampaignsHelper.SectionEntities(new_section, new ArrayList<>()));
+                filteredList.add(new CampaignsHelper.SectionEntities(new_section, new ArrayList<>()));
                 notifyItemInserted(footerHolder.getBindingAdapterPosition());
             });
         }
@@ -169,14 +175,29 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        int size = sectionsEntities.size();
+        int size = filteredList.size();
         return size + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == sectionsEntities.size()) return 0;
+        if (position == filteredList.size()) return 0;
         else return 1;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                return null;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            }
+        };
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {

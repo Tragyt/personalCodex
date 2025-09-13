@@ -40,6 +40,7 @@
     <string name="txtDescription">Descrizione</string>
     <string name="txtLinks">Collegamenti</string>
     <string name="txtNewBond">Seleziona il nuovo collegamento</string>
+    <string name="txtSearch">Cerca…</string>
 
     <string name="hintEntityDescription">Inserire descrizione</string>
 </resources>

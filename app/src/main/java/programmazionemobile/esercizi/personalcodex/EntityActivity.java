@@ -75,6 +75,7 @@ public class EntityActivity extends AppCompatActivity {
             EntitiesDAO entitiesDAO = db.entitiesDAO();
             EntitiesAccess entitiesAccess = new EntitiesAccess(entitiesDAO);
 
+            ImageView img = findViewById(R.id.imgEntity);
             TextView txtTitle = findViewById(R.id.txtEntityTitle);
             txtTitle.setText(entity.FD03_NAME);
 
@@ -86,6 +87,9 @@ public class EntityActivity extends AppCompatActivity {
                     entitiesAccess.update(entity);
                     txtTitle.setText(entity.FD03_NAME);
                     dialog.dismiss();
+
+                    if(entity.FD03_IMAGE == null)
+                        setDefaultImage(img);
                 }
             };
             DialogEdit titleDialog = new DialogEdit(entity.FD03_NAME, titleDialogClick);
@@ -95,7 +99,6 @@ public class EntityActivity extends AppCompatActivity {
             });
 
             //image
-            ImageView img = findViewById(R.id.imgEntity);
             if (entity.FD03_IMAGE == null)  //se nessuna immagine inserita creo immagine di default
                 img.post(() -> setDefaultImage(img));
             else {
@@ -208,7 +211,7 @@ public class EntityActivity extends AppCompatActivity {
                                 if(lnkEntity!=null){
                                     FD04_BONDS lnk = new FD04_BONDS(entity.ID, lnkEntity.ID);
                                     bondsAccess.insert(lnk);
-                                    //aggiornare adapter
+                                    bondsAdapter.addBond(lnk);
                                 }
                             }
                         }
@@ -228,6 +231,7 @@ public class EntityActivity extends AppCompatActivity {
                 intent.putExtra("campaign", campaign);
                 intent.putExtra("role", CampaignsHelper.CampaignRole.NEW_LINK);
                 intent.putExtra("entity", entity);
+                intent.putParcelableArrayListExtra("bonds",bonds);
                 newLinkLauncher.launch(intent);
             });
 

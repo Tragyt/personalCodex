@@ -1,8 +1,14 @@
 package programmazionemobile.esercizi.personalcodex;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -15,6 +21,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
@@ -30,6 +38,7 @@ import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD04_BONDS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogEdit;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
@@ -105,12 +114,39 @@ public class CampaignActivity extends AppCompatActivity {
                 };
 
                 FD03_ENTITIES entity = (FD03_ENTITIES) i.getSerializableExtra("entity");
+                ArrayList<FD04_BONDS> bonds = i.getParcelableArrayListExtra("bonds");
                 campaignSectionsAdapter = new CampaingsSectionsNewLinkAdapter(lstItems, entitiesAccess, sectionAccess, getSupportFragmentManager(), campaign.ID,
-                        launcher, listener, entity);
+                        launcher, listener, entity, bonds);
             }
 
             expandableListView.setLayoutManager(new LinearLayoutManager(this));
             expandableListView.setAdapter(campaignSectionsAdapter);
+
+            TextInputEditText txtSearch = findViewById(R.id.txtSearch);
+            txtSearch.setOnEditorActionListener((v, actionId, event) -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+                v.clearFocus();
+                return true;
+            });
+            txtSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
 
             findViewById(R.id.btnBackCampaign).setOnClickListener(view -> finish());
         } else {
@@ -129,5 +165,20 @@ public class CampaignActivity extends AppCompatActivity {
 
     private void updateAdapter(ArrayList<CampaignsHelper.SectionEntities> sectionEntities) {
         campaignSectionsAdapter.updateData(sectionEntities);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN){
+            View v = getCurrentFocus();
+            if(v instanceof EditText){
+                v.clearFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }
