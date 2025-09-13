@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -235,6 +236,22 @@ public class EntityActivity extends AppCompatActivity {
                 newLinkLauncher.launch(intent);
             });
 
+
+            //tasti pagina
+            findViewById(R.id.btnMenuEntity).setOnClickListener(v -> {
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+                popupMenu.getMenuInflater().inflate(R.menu.item_options, popupMenu.getMenu());
+                popupMenu.show();
+
+                popupMenu.setOnMenuItemClickListener(menuItem ->{
+                    int item = menuItem.getItemId();
+                    if(item == R.id.optDelete){
+                        entitiesAccess.delete(entity.ID);
+                        finish();
+                    }
+                    return false;
+                });
+            });
             findViewById(R.id.btnBackEntity).setOnClickListener(view -> finish());
         }
 
