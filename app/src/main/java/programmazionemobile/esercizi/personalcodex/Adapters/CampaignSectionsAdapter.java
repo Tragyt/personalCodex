@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
@@ -32,7 +33,7 @@ import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 
 public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-    implements Filterable {
+        implements Filterable {
 
     protected ArrayList<CampaignsHelper.SectionEntities> sectionsEntities;
     protected ArrayList<CampaignsHelper.SectionEntities> filteredList;
@@ -143,13 +144,13 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     protected void bind(RecyclerView.ViewHolder holder, FD02_CAMPAIGNS_SECTIONS section, CampaignsHelper.SectionEntities sectionEntity, EntitiesAdapter entitiesAdapter) {
-        cvSectionEntity = ((ItemViewHolder)holder).getLayout();
+        cvSectionEntity = ((ItemViewHolder) holder).getLayout();
         cvSection = cvSectionEntity.findViewById(R.id.cvSection);
 
         Context context = cvSectionEntity.getContext();
         ImageView imgArrow = cvSectionEntity.findViewById(R.id.imgArrow);
         RecyclerView rcvEntities = cvSectionEntity.findViewById(R.id.rcvEntities);
-        ((TextView)cvSectionEntity.findViewById(R.id.txtCampaignSection)).setText(section.FD02_NAME);
+        ((TextView) cvSectionEntity.findViewById(R.id.txtCampaignSection)).setText(section.FD02_NAME);
 
         //gestione espansione
         if (sectionEntity.isExpanded()) {
@@ -190,12 +191,33 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                return null;
+                FilterResults filterResults = new FilterResults();
+                if (constraint == null || constraint.length() == 0)
+                    filterResults.values = sectionsEntities;
+                else {
+                    ArrayList<CampaignsHelper.SectionEntities> res = new ArrayList<>();
+                    for (CampaignsHelper.SectionEntities section : sectionsEntities) {
+                        ArrayList<FD03_ENTITIES> entities = section.getEntities();
+                        ArrayList<FD03_ENTITIES> filteredEntities = entities.stream().filter(x -> x.FD03_NAME.toLowerCase()
+                                        .contains(constraint.toString().toLowerCase()))
+                                .collect(Collectors.toCollection(ArrayList::new));
+                        if (!filteredEntities.isEmpty()){
+                            CampaignsHelper.SectionEntities filteredSection = new CampaignsHelper.SectionEntities(section.getSection(), filteredEntities);
+                            filteredSection.expand_reduce();
+                            res.add(filteredSection);
+                        }
+                    }
+                    filterResults.values = res;
+                }
+                return filterResults;
             }
 
+            @SuppressLint("NotifyDataSetChanged")
+            @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-
+                filteredList = (ArrayList<CampaignsHelper.SectionEntities>) results.values;
+                notifyDataSetChanged();
             }
         };
     }

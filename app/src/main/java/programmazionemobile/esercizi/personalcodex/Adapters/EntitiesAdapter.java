@@ -20,11 +20,13 @@ import programmazionemobile.esercizi.personalcodex.R;
 public class EntitiesAdapter extends RecyclerView.Adapter<EntitiesAdapter.ItemViewHolder> {
 
     protected final ArrayList<FD03_ENTITIES> entities;
+    protected ArrayList<FD03_ENTITIES> filteredEntities;
     private final ActivityResultLauncher<Intent> launcher;
 
     public EntitiesAdapter(ArrayList<FD03_ENTITIES> entities, ActivityResultLauncher<Intent> launcher) {
         this.entities = entities;
         this.launcher = launcher;
+        this.filteredEntities = this.entities;
     }
 
     @NonNull
@@ -36,7 +38,7 @@ public class EntitiesAdapter extends RecyclerView.Adapter<EntitiesAdapter.ItemVi
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        FD03_ENTITIES entity = entities.get(position);
+        FD03_ENTITIES entity = filteredEntities.get(position);
 
         LinearLayout llEntity = holder.getLayout();
         TextView txtCampaignEntity = llEntity.findViewById(R.id.txtCampaignEntity);
@@ -50,7 +52,7 @@ public class EntitiesAdapter extends RecyclerView.Adapter<EntitiesAdapter.ItemVi
 
     @Override
     public int getItemCount() {
-        return entities.size();
+        return filteredEntities.size();
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {

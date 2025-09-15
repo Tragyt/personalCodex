@@ -77,8 +77,39 @@ public class CampaignActivity extends AppCompatActivity {
             //lista sezioni
             ArrayList<CampaignsHelper.SectionEntities> lstItems = getSections(sectionAccess, campaign, entitiesAccess);
 
+            //filtro sezioni
+            TextInputEditText txtSearch = findViewById(R.id.txtSearch);
+            txtSearch.setOnEditorActionListener((v, actionId, event) -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+                v.clearFocus();
+                return true;
+            });
+            txtSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    campaignSectionsAdapter.getFilter().filter(s);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
             //intent launcher da passare all'adapter
-            ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> updateAdapter(getSections(sectionAccess, campaign, entitiesAccess)));
+            ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result ->{
+                        updateAdapter(getSections(sectionAccess, campaign, entitiesAccess));
+                        txtSearch.setText("");
+                    });
 
             RecyclerView expandableListView = findViewById(R.id.lvCampaign);
             TextView txtTile = findViewById(R.id.txtCampaignTitle);
@@ -121,32 +152,6 @@ public class CampaignActivity extends AppCompatActivity {
 
             expandableListView.setLayoutManager(new LinearLayoutManager(this));
             expandableListView.setAdapter(campaignSectionsAdapter);
-
-            TextInputEditText txtSearch = findViewById(R.id.txtSearch);
-            txtSearch.setOnEditorActionListener((v, actionId, event) -> {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-                v.clearFocus();
-                return true;
-            });
-            txtSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
 
             findViewById(R.id.btnBackCampaign).setOnClickListener(view -> finish());
         } else {
