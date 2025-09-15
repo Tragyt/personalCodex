@@ -38,7 +38,7 @@ public class CampaingsSectionsNewLinkAdapter extends CampaignSectionsAdapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        CampaignsHelper.SectionEntities sectionEntity = sectionsEntities.get(position);
+        CampaignsHelper.SectionEntities sectionEntity = filteredList.get(position);
 
         if (entity.FD03_SECTION_FD02 == sectionEntity.getSection().ID)
             sectionEntity.removeEntity(entity.ID);

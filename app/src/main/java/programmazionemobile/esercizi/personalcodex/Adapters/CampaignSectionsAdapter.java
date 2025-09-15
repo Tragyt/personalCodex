@@ -2,8 +2,10 @@ package programmazionemobile.esercizi.personalcodex.Adapters;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,6 +145,8 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     }
 
+
+    @SuppressLint("NotifyDataSetChanged")
     protected void bind(RecyclerView.ViewHolder holder, FD02_CAMPAIGNS_SECTIONS section, CampaignsHelper.SectionEntities sectionEntity, EntitiesAdapter entitiesAdapter) {
         cvSectionEntity = ((ItemViewHolder) holder).getLayout();
         cvSection = cvSectionEntity.findViewById(R.id.cvSection);
@@ -171,6 +175,24 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
         cvSection.setOnClickListener(view -> {
             sectionEntity.expand_reduce();
             notifyItemChanged(holder.getBindingAdapterPosition());
+        });
+
+        holder.itemView.setOnDragListener((v, event) -> {
+            if(event.getAction() == DragEvent.ACTION_DROP){
+                ClipData.Item item = event.getClipData().getItemAt(0);
+                long entityId = Long.parseLong(item.getText().toString());
+
+                FD03_ENTITIES entity = entitiesAccess.get(entityId);
+                entity.FD03_SECTION_FD02 = section.ID;
+                entitiesAccess.update(entity);
+
+                ArrayList<FD03_ENTITIES> updated = entitiesAccess.getAll(section.ID);
+                entitiesAdapter.updateItems(updated);
+
+                EntitiesAdapter.DragInfo dragInfo = (EntitiesAdapter.DragInfo) event.getLocalState();
+                dragInfo.adapter.removeItem(dragInfo.position);
+            }
+            return true;
         });
     }
 

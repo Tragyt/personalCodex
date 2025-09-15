@@ -8,7 +8,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITI
 public class CampaignsHelper {
     public static class SectionEntities {
         private final FD02_CAMPAIGNS_SECTIONS section;
-        private final ArrayList<FD03_ENTITIES> entities;
+        private ArrayList<FD03_ENTITIES> entities;
         private Boolean expanded;
 
         public SectionEntities(FD02_CAMPAIGNS_SECTIONS section, ArrayList<FD03_ENTITIES> entities) {
@@ -39,6 +39,10 @@ public class CampaignsHelper {
 
         public FD02_CAMPAIGNS_SECTIONS getSection(){
             return section;
+        }
+
+        public void updateEntities(ArrayList<FD03_ENTITIES> entities){
+            this.entities = entities;
         }
     }
 

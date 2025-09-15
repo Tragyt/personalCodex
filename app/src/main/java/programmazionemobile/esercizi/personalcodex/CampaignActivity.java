@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -136,6 +137,7 @@ public class CampaignActivity extends AppCompatActivity {
                 });
             } else if (role == CampaignsHelper.CampaignRole.NEW_LINK){
                 txtTile.setText(getString(R.string.txtNewBond));
+                txtTile.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 
                 EntitiesNewLinkAdapter.OnEntityClickListener listener = entity -> {
                     Intent intent = new Intent();
