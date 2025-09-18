@@ -41,6 +41,24 @@ public class EntitiesAccess {
         executor.execute(task);
     }
 
+    public ArrayList<FD03_ENTITIES> updateAndGetAll(FD03_ENTITIES entity) {
+        FutureTask<List<FD03_ENTITIES>> task = new FutureTask<List<FD03_ENTITIES>>(() -> {
+            dao.update(entity);
+            return dao.getAll(entity.FD03_SECTION_FD02,"");
+        });
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+        ArrayList<FD03_ENTITIES> ret;
+        try {
+            ret = new ArrayList<>(task.get());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
+    }
+
     public Long insert(FD03_ENTITIES entity) {
         FutureTask<Long> task = new FutureTask<>(() -> dao.insert(entity));
 

@@ -184,9 +184,8 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                 FD03_ENTITIES entity = entitiesAccess.get(entityId);
                 entity.FD03_SECTION_FD02 = section.ID;
-                entitiesAccess.update(entity);
-
-                ArrayList<FD03_ENTITIES> updated = entitiesAccess.getAll(section.ID);
+                ArrayList<FD03_ENTITIES> updated = entitiesAccess.updateAndGetAll(entity);
+                sectionEntity.updateEntities(updated);
                 entitiesAdapter.updateItems(updated);
 
                 EntitiesAdapter.DragInfo dragInfo = (EntitiesAdapter.DragInfo) event.getLocalState();

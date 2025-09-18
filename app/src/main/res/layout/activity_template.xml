@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clTemplate"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,7 +16,7 @@
         android:contentDescription="@string/btnDelete_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_delete_black"/>
+        app:srcCompat="@drawable/ic_delete_black" />
 
     <ImageButton
         android:id="@+id/btnBackTemplate"
@@ -23,18 +24,17 @@
         android:layout_height="51dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:contentDescription="@string/btnBack_description"
         android:background="@drawable/roundcorner_yellow"
+        android:contentDescription="@string/btnBack_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_back"/>
+        app:srcCompat="@drawable/ic_back" />
 
     <EditText
         android:id="@+id/editTemplatename"
-        android:layout_width="384dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="100dp"
         android:layout_marginEnd="15dp"
         android:ems="10"
         android:inputType="text"
@@ -47,18 +47,18 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstTemplateSections"
-        android:layout_width="407dp"
-        android:layout_height="515dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
+        android:divider="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@id/btnBackTemplate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTemplatename"
-        app:layout_constraintVertical_bias="0.261"
-        android:divider="@android:color/transparent">
+        app:layout_constraintVertical_bias="0.261">
 
     </androidx.recyclerview.widget.RecyclerView>
 </androidx.constraintlayout.widget.ConstraintLayout>

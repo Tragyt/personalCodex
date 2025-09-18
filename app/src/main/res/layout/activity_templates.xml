@@ -17,7 +17,8 @@
         android:contentDescription="@string/btnNewTemplate_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_plus" />
+        app:srcCompat="@drawable/ic_plus"
+        android:elevation="1dp"/>
 
     <ImageButton
         android:id="@+id/btnBackTemplates"
@@ -29,17 +30,19 @@
         android:contentDescription="@string/btnBack_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_back" />
+        app:srcCompat="@drawable/ic_back"
+        android:elevation="1dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvTemplates"
-        android:layout_width="411dp"
-        android:layout_height="653dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="0dp"/>
 
     <TextView
         android:id="@+id/txtTitleTemplates"
