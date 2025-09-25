@@ -1,6 +1,7 @@
 package programmazionemobile.esercizi.personalcodex;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,11 +27,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.mediapipe.framework.image.BitmapExtractor;
+import com.google.mediapipe.tasks.vision.imagegenerator.ImageGenerator;
+import com.google.mediapipe.tasks.vision.imagegenerator.ImageGeneratorResult;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.BondsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
@@ -98,7 +104,35 @@ public class EntityActivity extends AppCompatActivity {
 
             //image
             if (entity.FD03_IMAGE == null)  //se nessuna immagine inserita creo immagine di default
-                img.post(() -> setDefaultImage(img));
+            {
+                Context context = this;
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageGenerator.ImageGeneratorOptions options = ImageGenerator.ImageGeneratorOptions.builder()
+                                .setImageGeneratorModelDirectory("/data/local/tmp/image_generator/bins")
+                                .build();
+                        ImageGenerator imageGenerator = ImageGenerator.createFromOptions(context,options);
+
+                        Random random = new Random();
+                        imageGenerator.setInputs("Gattino con i pattini", 20,random.nextInt());
+
+                        ImageGeneratorResult result = imageGenerator.generate("Gattino con i pattini", 20,random.nextInt());
+                        Bitmap bitmap = BitmapExtractor.extract(result.generatedImage());
+
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                img.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                }).start();
+
+            }
+               // img.post(() -> setDefaultImage(img));
             else {
                 Bitmap bitmap = BitmapFactory.decodeFile(entity.FD03_IMAGE);
                 img.setImageBitmap(bitmap);

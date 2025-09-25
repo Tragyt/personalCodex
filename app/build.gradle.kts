@@ -44,6 +44,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
+
+    implementation("com.google.mediapipe:tasks-vision-image-generator:0.10.20")
 }
 java {
     toolchain {
