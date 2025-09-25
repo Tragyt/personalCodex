@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -38,12 +37,10 @@ import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAcc
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
-import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.SectionAccess;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.BondsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectionsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
-import programmazionemobile.esercizi.personalcodex.Database.DAOs.SectionsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
@@ -89,7 +86,7 @@ public class EntityActivity extends AppCompatActivity {
                     txtTitle.setText(entity.FD03_NAME);
                     dialog.dismiss();
 
-                    if(entity.FD03_IMAGE == null)
+                    if (entity.FD03_IMAGE == null)
                         setDefaultImage(img);
                 }
             };
@@ -197,7 +194,7 @@ public class EntityActivity extends AppCompatActivity {
 
             ArrayList<FD04_BONDS> bonds = bondsAccess.getAll(entity.ID);
             RecyclerView rcvBonds = findViewById(R.id.rcvBonds);
-            BondsAdapter bondsAdapter = new BondsAdapter(bondsAccess,bonds,entitiesAccess,entity.ID);
+            BondsAdapter bondsAdapter = new BondsAdapter(bondsAccess, bonds, entitiesAccess, entity.ID);
             rcvBonds.setLayoutManager(new LinearLayoutManager(this));
             rcvBonds.setAdapter(bondsAdapter);
 
@@ -207,9 +204,9 @@ public class EntityActivity extends AppCompatActivity {
                     result -> {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
-                            if(data!=null){
+                            if (data != null) {
                                 FD03_ENTITIES lnkEntity = (FD03_ENTITIES) data.getSerializableExtra("entity");
-                                if(lnkEntity!=null){
+                                if (lnkEntity != null) {
                                     FD04_BONDS lnk = new FD04_BONDS(entity.ID, lnkEntity.ID);
                                     bondsAccess.insert(lnk);
                                     bondsAdapter.addBond(lnk);
@@ -232,7 +229,7 @@ public class EntityActivity extends AppCompatActivity {
                 intent.putExtra("campaign", campaign);
                 intent.putExtra("role", CampaignsHelper.CampaignRole.NEW_LINK);
                 intent.putExtra("entity", entity);
-                intent.putParcelableArrayListExtra("bonds",bonds);
+                intent.putParcelableArrayListExtra("bonds", bonds);
                 newLinkLauncher.launch(intent);
             });
 
@@ -243,9 +240,9 @@ public class EntityActivity extends AppCompatActivity {
                 popupMenu.getMenuInflater().inflate(R.menu.item_options, popupMenu.getMenu());
                 popupMenu.show();
 
-                popupMenu.setOnMenuItemClickListener(menuItem ->{
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
                     int item = menuItem.getItemId();
-                    if(item == R.id.optDelete){
+                    if (item == R.id.optDelete) {
                         entitiesAccess.delete(entity.ID);
                         finish();
                     }
