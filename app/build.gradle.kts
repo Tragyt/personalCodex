@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -14,6 +16,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -45,7 +48,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
 
-    implementation("com.google.mediapipe:tasks-vision-image-generator:0.10.20")
+    //noinspection Aligned16KB
+    implementation("com.google.mediapipe:tasks-text:0.10.15")
 }
 java {
     toolchain {

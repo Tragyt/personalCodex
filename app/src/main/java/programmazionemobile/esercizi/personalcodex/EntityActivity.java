@@ -1,7 +1,6 @@
 package programmazionemobile.esercizi.personalcodex;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,16 +27,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.mediapipe.framework.image.BitmapExtractor;
-import com.google.mediapipe.tasks.vision.imagegenerator.ImageGenerator;
-import com.google.mediapipe.tasks.vision.imagegenerator.ImageGeneratorResult;
+import com.google.mediapipe.tasks.core.BaseOptions;
+import com.google.mediapipe.tasks.text.textclassifier.TextClassifier;
+import com.google.mediapipe.tasks.text.textclassifier.TextClassifierResult;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Arrays;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.BondsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
@@ -83,6 +83,35 @@ public class EntityActivity extends AppCompatActivity {
             TextView txtTitle = findViewById(R.id.txtEntityTitle);
             txtTitle.setText(entity.FD03_NAME);
 
+            new Thread(() -> {
+                try {
+                    BaseOptions options = BaseOptions.builder()
+                            .setModelAssetPath("bert_text_classifier.tflite")
+                            .build();
+
+                    TextClassifier.TextClassifierOptions textClassifierOptions =
+                            TextClassifier.TextClassifierOptions.builder()
+                                    .setBaseOptions(options)
+                                    .build();
+
+                    try (TextClassifier textClassifier =
+                                 TextClassifier.createFromFile(getApplicationContext(),"bert_classifier.tflite")) {
+
+                        TextClassifierResult result = textClassifier.classify("This is a test sentence.");
+
+                        runOnUiThread(() -> txtTitle.setText(result.toString()));
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> {
+                        if (txtTitle != null) {
+                            txtTitle.setText("Errore: " + e.getMessage());
+                        }
+                    });
+                }
+            }).start();
+
             //change title dialog
             View.OnClickListener titleDialogClick = v -> {
                 DialogEdit dialog = (DialogEdit) getSupportFragmentManager().findFragmentByTag("titleDialog");
@@ -104,35 +133,7 @@ public class EntityActivity extends AppCompatActivity {
 
             //image
             if (entity.FD03_IMAGE == null)  //se nessuna immagine inserita creo immagine di default
-            {
-                Context context = this;
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ImageGenerator.ImageGeneratorOptions options = ImageGenerator.ImageGeneratorOptions.builder()
-                                .setImageGeneratorModelDirectory("/data/local/tmp/image_generator/bins")
-                                .build();
-                        ImageGenerator imageGenerator = ImageGenerator.createFromOptions(context,options);
-
-                        Random random = new Random();
-                        imageGenerator.setInputs("Gattino con i pattini", 20,random.nextInt());
-
-                        ImageGeneratorResult result = imageGenerator.generate("Gattino con i pattini", 20,random.nextInt());
-                        Bitmap bitmap = BitmapExtractor.extract(result.generatedImage());
-
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                img.setImageBitmap(bitmap);
-                            }
-                        });
-                    }
-                }).start();
-
-            }
-               // img.post(() -> setDefaultImage(img));
+                img.post(() -> setDefaultImage(img));
             else {
                 Bitmap bitmap = BitmapFactory.decodeFile(entity.FD03_IMAGE);
                 img.setImageBitmap(bitmap);
@@ -211,6 +212,7 @@ public class EntityActivity extends AppCompatActivity {
                 btnSaveDescription.setVisibility(View.VISIBLE);
             });
 
+//            Context context = this;
             btnSaveDescription.setOnClickListener(view -> {
                 entity.FD03_DESCRIPTION = txtDescriptionEdit.getText().toString();
                 entitiesAccess.update(entity);

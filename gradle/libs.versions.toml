@@ -10,6 +10,7 @@ constraintlayout = "2.2.0"
 material3 = "3"
 material3AdaptiveNavigationSuite = "1.4.0-alpha16"
 material3Version = "1.3.2"
+protobufJavalite = "3.19.1"
 roomCommon = "2.6.1"
 roomCompilerVersion = "2.7.1"
 roomRuntime = "2.6.1"
@@ -20,6 +21,7 @@ rxjava = "2.2.7"
 rxjava2 = "1.1.1"
 cardview = "1.0.0"
 recyclerview = "1.4.0"
+tasksVisionImageGenerator = "0.20230731"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -33,6 +35,7 @@ material3 = { module = "androidx.compose.material3:material3", version.ref = "ma
 material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3AdaptiveNavigationSuite" }
 material3-v132 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 material3-window-size-class1 = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3Version" }
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 room-compiler-v271 = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
@@ -43,6 +46,8 @@ rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
 rxjava2 = { module = "android.arch.persistence.room:rxjava2", version.ref = "rxjava2" }
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+tasks-text = { module = "com.google.mediapipe:tasks-text", version.ref = "tasksVisionImageGenerator" }
+tasks-vision-image-generator = { module = "com.google.mediapipe:tasks-vision-image-generator", version.ref = "tasksVisionImageGenerator" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
