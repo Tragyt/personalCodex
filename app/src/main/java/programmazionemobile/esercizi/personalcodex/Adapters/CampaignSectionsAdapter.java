@@ -153,7 +153,7 @@ public class CampaignSectionsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         Context context = cvSectionEntity.getContext();
         ImageView imgArrow = cvSectionEntity.findViewById(R.id.imgArrow);
-        RecyclerView rcvEntities = cvSectionEntity.findViewById(R.id.rcvEntities);
+        RecyclerView rcvEntities = cvSectionEntity.findViewById(R.id.rcvProposedEntities);
         ((TextView) cvSectionEntity.findViewById(R.id.txtCampaignSection)).setText(section.FD02_NAME);
 
         //gestione espansione

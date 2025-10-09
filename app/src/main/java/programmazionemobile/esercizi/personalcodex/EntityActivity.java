@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,16 +26,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.mediapipe.tasks.core.BaseOptions;
-import com.google.mediapipe.tasks.text.textclassifier.TextClassifier;
-import com.google.mediapipe.tasks.text.textclassifier.TextClassifierResult;
+import com.google.mediapipe.tasks.genai.llminference.LlmInference;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.BondsAdapter;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
@@ -54,6 +51,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD04_BONDS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogEdit;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogImage;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogProposedLinks;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 
 public class EntityActivity extends AppCompatActivity {
@@ -82,35 +80,6 @@ public class EntityActivity extends AppCompatActivity {
             ImageView img = findViewById(R.id.imgEntity);
             TextView txtTitle = findViewById(R.id.txtEntityTitle);
             txtTitle.setText(entity.FD03_NAME);
-
-            new Thread(() -> {
-                try {
-                    BaseOptions options = BaseOptions.builder()
-                            .setModelAssetPath("bert_text_classifier.tflite")
-                            .build();
-
-                    TextClassifier.TextClassifierOptions textClassifierOptions =
-                            TextClassifier.TextClassifierOptions.builder()
-                                    .setBaseOptions(options)
-                                    .build();
-
-                    try (TextClassifier textClassifier =
-                                 TextClassifier.createFromFile(getApplicationContext(),"bert_classifier.tflite")) {
-
-                        TextClassifierResult result = textClassifier.classify("This is a test sentence.");
-
-                        runOnUiThread(() -> txtTitle.setText(result.toString()));
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> {
-                        if (txtTitle != null) {
-                            txtTitle.setText("Errore: " + e.getMessage());
-                        }
-                    });
-                }
-            }).start();
 
             //change title dialog
             View.OnClickListener titleDialogClick = v -> {
@@ -212,7 +181,7 @@ public class EntityActivity extends AppCompatActivity {
                 btnSaveDescription.setVisibility(View.VISIBLE);
             });
 
-//            Context context = this;
+
             btnSaveDescription.setOnClickListener(view -> {
                 entity.FD03_DESCRIPTION = txtDescriptionEdit.getText().toString();
                 entitiesAccess.update(entity);
@@ -281,6 +250,40 @@ public class EntityActivity extends AppCompatActivity {
                     if (item == R.id.optDelete) {
                         entitiesAccess.delete(entity.ID);
                         finish();
+                    } else if (item == R.id.optLinks) {
+                        String query = "Da questo testo:\n" +
+                                "\n" +
+                                "\"%s\"\n" +
+                                "\n" +
+                                "Estrai fino a 10 entità (esattamente come sono scritte) che potrebbero essere collegate a questa descrizione. Ritorna il risultato sequenza su unica riga come:\n" +
+                                "parola1|parola2|parola3|...";
+                        String finalQuery = String.format(query, entity.FD03_DESCRIPTION);
+                        new Thread(() -> {
+                            LlmInference.LlmInferenceOptions options = LlmInference.LlmInferenceOptions.builder()
+                                    .setModelPath("/data/local/tmp/llm/gemma3-1b-it-int4.task")
+                                    .setMaxTopK(64)
+                                    .build();
+
+                            String res;
+                            try (LlmInference llmInference = LlmInference.createFromOptions(getApplicationContext(), options)) {
+                                res = llmInference.generateResponse(finalQuery);
+                            }
+                            String[] keywords = res.split("\\|");
+
+                            ArrayList<FD03_ENTITIES> props = new ArrayList<>();
+                            for (String k : keywords) {
+                                ArrayList<FD03_ENTITIES> possible_links = entitiesAccess.getAllFromCampaign(section.FD02_CAMPAIGN_FD01, k.toLowerCase().trim());
+                                props.addAll(possible_links.stream()
+                                        .filter(x -> x.ID != entity.ID && props.stream().noneMatch(y -> y.ID == x.ID)
+                                                && bonds.stream().noneMatch(y -> y.FD04_ENTITY1_FD03 == x.ID || y.FD04_ENTITY2_FD03 == x.ID))
+                                        .collect(Collectors.toCollection(ArrayList::new)));
+                            }
+
+                            runOnUiThread(() -> {
+                                DialogProposedLinks dialog = new DialogProposedLinks(props,entity.ID,bondsAccess, bondsAdapter::addBond);
+                                dialog.show(getSupportFragmentManager(), "proposedLnksDialog");
+                            });
+                        }).start();
                     }
                     return false;
                 });

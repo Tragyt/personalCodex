@@ -49,6 +49,7 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
         view.findViewById(R.id.btnInfoCampaign).setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), v);
             popupMenu.getMenuInflater().inflate(R.menu.item_options, popupMenu.getMenu());
+            popupMenu.getMenu().findItem(R.id.optLinks).setVisible(false);
             popupMenu.show();
 
             popupMenu.setOnMenuItemClickListener(menuItem ->{

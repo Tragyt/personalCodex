@@ -7,6 +7,7 @@
     <string name="menu_templates">Template</string>
     <string name="menu_delete">Elimina</string>
     <string name="menu_share">Condividi</string>
+    <string name="menu_links">Proponi collegamenti da Descrizione</string>
 
     <string name="title_templates">Seleziona Template</string>
     <string name="title_template">Nuovo Template</string>

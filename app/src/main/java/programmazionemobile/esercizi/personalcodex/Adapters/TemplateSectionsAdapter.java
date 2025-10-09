@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.SectionAccess;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.TP02_SECTIONS;
-import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 
 public class TemplateSectionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

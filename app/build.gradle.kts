@@ -48,8 +48,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
 
-    //noinspection Aligned16KB
-    implementation("com.google.mediapipe:tasks-text:0.10.15")
+    implementation("com.google.mediapipe:tasks-genai:0.10.29")
+
 }
 java {
     toolchain {

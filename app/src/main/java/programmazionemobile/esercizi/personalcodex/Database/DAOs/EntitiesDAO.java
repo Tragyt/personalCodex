@@ -30,4 +30,9 @@ public interface EntitiesDAO {
 
     @Query("SELECT * FROM FD03_ENTITIES WHERE ID = :idEntity LIMIT 1")
     FD03_ENTITIES get(long idEntity);
+
+    @Query("SELECT DISTINCT FD03_ENTITIES.* " +
+            "FROM FD03_ENTITIES INNER JOIN FD02_CAMPAIGNS_SECTIONS ON FD03_SECTION_FD02 = FD02_CAMPAIGNS_SECTIONS.ID " +
+            "WHERE FD02_CAMPAIGN_FD01 = :idCampaign AND Lower(Trim(FD03_NAME)) LIKE '%' || :name || '%'")
+    List<FD03_ENTITIES> getAllFromCampaign(long  idCampaign, String name);
 }

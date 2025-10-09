@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         btnNewCampaign.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(this, view);
             popupMenu.getMenuInflater().inflate(R.menu.new_element, popupMenu.getMenu());
-
             popupMenu.setOnMenuItemClickListener(menuItem -> {
                 int item = menuItem.getItemId();
                 if (item == R.id.itmNew) {

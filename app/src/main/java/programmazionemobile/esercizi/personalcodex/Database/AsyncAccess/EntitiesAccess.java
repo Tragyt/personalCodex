@@ -31,6 +31,20 @@ public class EntitiesAccess {
         return ret;
     }
 
+    public ArrayList<FD03_ENTITIES> getAllFromCampaign(long idCampaign, String name) {
+        FutureTask<List<FD03_ENTITIES>> task = new FutureTask<>(() -> dao.getAllFromCampaign(idCampaign, name));
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+        ArrayList<FD03_ENTITIES> ret;
+        try {
+            ret = new ArrayList<>(task.get());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
+    }
+
     public void update(FD03_ENTITIES entity) {
         FutureTask<?> task = new FutureTask<>(() -> {
             dao.update(entity);
