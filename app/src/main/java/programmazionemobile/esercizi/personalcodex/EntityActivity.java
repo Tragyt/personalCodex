@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -27,6 +28,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.mediapipe.tasks.genai.llminference.LlmInference;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,6 +59,12 @@ import programmazionemobile.esercizi.personalcodex.Fragments.DialogProposedLinks
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 
 public class EntityActivity extends AppCompatActivity {
+
+    private class LLMResult {
+        public String Name;
+        public String Description;
+    }
+
     private FD03_ENTITIES entity;
 
     @Override
@@ -251,38 +261,73 @@ public class EntityActivity extends AppCompatActivity {
                         entitiesAccess.delete(entity.ID);
                         finish();
                     } else if (item == R.id.optLinks) {
-                        String query = "Da questo testo:\n" +
+//                        String query = "Da questo testo:\n" +
+//                                "\n" +
+//                                "\"%s\"\n" +
+//                                "\n" +
+//                                "Estrai fino a 10 entità (esattamente come sono scritte) che potrebbero essere collegate a questa descrizione. Ritorna il risultato sequenza su unica riga come:\n" +
+//                                "parola1|parola2|parola3|...";
+
+                        String query = "Trova gli elementi semanticamente collegati all'elemento base.\n" +
                                 "\n" +
-                                "\"%s\"\n" +
+                                "Elemento base: {\"%s\":\"%s\"}\n" +
                                 "\n" +
-                                "Estrai fino a 10 entità (esattamente come sono scritte) che potrebbero essere collegate a questa descrizione. Ritorna il risultato sequenza su unica riga come:\n" +
-                                "parola1|parola2|parola3|...";
-                        String finalQuery = String.format(query, entity.FD03_DESCRIPTION);
+                                "Elementi candidati:\n" +
+                                "[{%s}]\n" +
+                                "\n" +
+                                "Rispondi con JSON: [{\"nome\": \"...\", \"correlato\": true|false}]";
+
+                        ArrayList<FD03_ENTITIES> entities = entitiesAccess.getAllFromCampaign(section.FD02_CAMPAIGN_FD01, "")
+                                .stream().filter(x -> x.ID != entity.ID)
+                                .collect(Collectors.toCollection(ArrayList::new));
+                        String json_elems = "";
+                        for (FD03_ENTITIES e : entities)
+                            json_elems = json_elems.concat(String.format("\"%s\":\"%s\",", e.FD03_NAME, e.FD03_DESCRIPTION));
+
+                        String finalQuery = String.format(query, entity.FD03_NAME, entity.FD03_DESCRIPTION, json_elems);
+                        ProgressBar pb = findViewById(R.id.pbProposedLinks);
+                        pb.setVisibility(View.VISIBLE);
+
                         new Thread(() -> {
                             LlmInference.LlmInferenceOptions options = LlmInference.LlmInferenceOptions.builder()
                                     .setModelPath("/data/local/tmp/llm/gemma3-1b-it-int4.task")
                                     .setMaxTopK(64)
                                     .build();
 
-                            String res;
+                            String res = "";
                             try (LlmInference llmInference = LlmInference.createFromOptions(getApplicationContext(), options)) {
                                 res = llmInference.generateResponse(finalQuery);
-                            }
-                            String[] keywords = res.split("\\|");
+                                res = res.substring(8, res.length() - 3);
 
-                            ArrayList<FD03_ENTITIES> props = new ArrayList<>();
-                            for (String k : keywords) {
-                                ArrayList<FD03_ENTITIES> possible_links = entitiesAccess.getAllFromCampaign(section.FD02_CAMPAIGN_FD01, k.toLowerCase().trim());
-                                props.addAll(possible_links.stream()
-                                        .filter(x -> x.ID != entity.ID && props.stream().noneMatch(y -> y.ID == x.ID)
-                                                && bonds.stream().noneMatch(y -> y.FD04_ENTITY1_FD03 == x.ID || y.FD04_ENTITY2_FD03 == x.ID))
-                                        .collect(Collectors.toCollection(ArrayList::new)));
-                            }
+                                JSONArray jsonArray = new JSONArray(res);
+                                ArrayList<String> keywords = new ArrayList<>();
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    JSONObject obj = jsonArray.getJSONObject(j);
+                                    if (obj.getBoolean("correlato"))
+                                        keywords.add(obj.getString("nome"));
+                                }
 
-                            runOnUiThread(() -> {
-                                DialogProposedLinks dialog = new DialogProposedLinks(props,entity.ID,bondsAccess, bondsAdapter::addBond);
-                                dialog.show(getSupportFragmentManager(), "proposedLnksDialog");
-                            });
+                                ArrayList<FD03_ENTITIES> props = new ArrayList<>();
+                                for (String k : keywords) {
+                                    ArrayList<FD03_ENTITIES> possible_links = entitiesAccess.getAllFromCampaign(section.FD02_CAMPAIGN_FD01, k.toLowerCase().trim());
+                                    props.addAll(possible_links.stream()
+                                            .filter(x -> x.ID != entity.ID && props.stream().noneMatch(y -> y.ID == x.ID)
+                                                    && bonds.stream().noneMatch(y -> y.FD04_ENTITY1_FD03 == x.ID || y.FD04_ENTITY2_FD03 == x.ID))
+                                            .collect(Collectors.toCollection(ArrayList::new)));
+                                }
+
+                                runOnUiThread(() -> {
+                                    DialogProposedLinks dialog = new DialogProposedLinks(props, entity.ID, bondsAccess, x -> {
+                                        bondsAdapter.addBond(x);
+                                        DialogProposedLinks fragment = (DialogProposedLinks) getSupportFragmentManager().findFragmentByTag("proposedLnksDialog");
+                                        if (fragment != null)
+                                            fragment.dismiss();
+                                    });
+                                    dialog.show(getSupportFragmentManager(), "proposedLnksDialog");
+                                    pb.setVisibility(View.GONE);
+                                });
+                            } catch (Exception ignored) {
+                            }
                         }).start();
                     }
                     return false;

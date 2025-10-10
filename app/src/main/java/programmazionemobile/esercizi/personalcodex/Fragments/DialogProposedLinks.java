@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,10 +43,16 @@ public class DialogProposedLinks extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_proposed_links, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.rcvProposedLinks);
-        ProposedLinksAdapter adapter = new ProposedLinksAdapter(entities,idEntity,bondsAccess,onClickedItem);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(adapter);
+
+        if (!entities.isEmpty()) {
+            RecyclerView recyclerView = view.findViewById(R.id.rcvProposedLinks);
+            ProposedLinksAdapter adapter = new ProposedLinksAdapter(entities, idEntity, bondsAccess, onClickedItem);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            recyclerView.setAdapter(adapter);
+        } else {
+            TextView txt = view.findViewById(R.id.txtNoResultsProposedLinks);
+            txt.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
