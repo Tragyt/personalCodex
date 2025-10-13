@@ -2,9 +2,14 @@ package programmazionemobile.esercizi.personalcodex;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Filter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -16,6 +21,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignsAdapter;
@@ -39,6 +52,43 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        File tflite = new File(getFilesDir(), "gemma3-1b-it-int4.task");
+        if (!tflite.exists()) {
+            File tempFile = new File(getFilesDir(), "gemma3-1b-it-int4.task.tmp");
+            LinearLayout ll = findViewById(R.id.llDownload);
+            ll.setVisibility(View.VISIBLE);
+            ProgressBar pb = findViewById(R.id.pbMain);
+
+            String url_str = "https://huggingface.co/obaf/gemma3-1b-it-int4/resolve/main/gemma3-1b-it-int4.task?download=true";
+            new Thread(() -> {
+                try {
+                    URL url = new URL(url_str);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+                    int fileLength = connection.getContentLength();
+                    InputStream input = connection.getInputStream();
+                    FileOutputStream out = new FileOutputStream(tempFile);
+
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    long total = 0;
+
+                    while ((bytesRead = input.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                        total+=bytesRead;
+
+                        int progress = (int) (total * 100 / fileLength);
+                        runOnUiThread(() -> pb.setProgress(progress));
+                    }
+
+                    if(!tempFile.renameTo(tflite))
+                        throw new IOException();
+                    runOnUiThread(() -> ll.setVisibility(View.GONE));
+                } catch (IOException ignored) {
+                }
+            }).start();
+        }
 
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -85,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         CaricaCampaigns();
     }
 
-    private void CaricaCampaigns(){
+    private void CaricaCampaigns() {
         MyDatabase db = MyDatabase.getInstance(this);
         CampaignsDAO dao = db.campaignsDAO();
         CampaignsAccess access = new CampaignsAccess(dao);

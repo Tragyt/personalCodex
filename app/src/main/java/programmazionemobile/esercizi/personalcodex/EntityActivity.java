@@ -288,9 +288,11 @@ public class EntityActivity extends AppCompatActivity {
                         ProgressBar pb = findViewById(R.id.pbProposedLinks);
                         pb.setVisibility(View.VISIBLE);
 
+                        File modelFile = new File(getFilesDir(), "gemma3-1b-it-int4.task");
+                        String modelPath = modelFile.getAbsolutePath();
                         new Thread(() -> {
                             LlmInference.LlmInferenceOptions options = LlmInference.LlmInferenceOptions.builder()
-                                    .setModelPath("/data/local/tmp/llm/gemma3-1b-it-int4.task")
+                                    .setModelPath(modelPath)
                                     .setMaxTopK(64)
                                     .build();
 

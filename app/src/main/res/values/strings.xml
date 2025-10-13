@@ -42,6 +42,7 @@
     <string name="txtNewBond">Select new link</string>
     <string name="txtSearch">Search…</string>
     <string name="txtNoResults">No Results found</string>
+    <string name="txtDownload">Download… wait 1 or 2 minutes</string>
 
     <string name="hintEntityDescription">Insert description</string>
 </resources>

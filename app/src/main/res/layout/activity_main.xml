@@ -15,10 +15,10 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/roundcorner_yellow"
         android:contentDescription="@string/btnSettings_description"
+        android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_settings"
-        android:elevation="1dp"/>
+        app:srcCompat="@drawable/ic_settings" />
 
     <ImageButton
         android:id="@+id/btnNewCampaign"
@@ -28,19 +28,55 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/roundcorner_yellow"
         android:contentDescription="@string/btnNewCampaign_description"
+        android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_plus"
-        android:elevation="1dp"/>
+        app:srcCompat="@drawable/ic_plus" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvCampaigns"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:elevation="0dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llDownload"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="100dp">
+
+        <ProgressBar
+            android:id="@+id/pbMain"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:progress="0"
+            android:max="100"
+            android:indeterminate="false"
+            android:indeterminateTint="@color/red"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txtDownload"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="12dp"/>
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
