@@ -62,13 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
             String url_str = "https://huggingface.co/obaf/gemma3-1b-it-int4/resolve/main/gemma3-1b-it-int4.task?download=true";
             new Thread(() -> {
-                try {
+                try (FileOutputStream out = new FileOutputStream(tempFile)) {
                     URL url = new URL(url_str);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
                     int fileLength = connection.getContentLength();
                     InputStream input = connection.getInputStream();
-                    FileOutputStream out = new FileOutputStream(tempFile);
 
                     byte[] buffer = new byte[8192];
                     int bytesRead;
@@ -76,13 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
                     while ((bytesRead = input.read(buffer)) != -1) {
                         out.write(buffer, 0, bytesRead);
-                        total+=bytesRead;
+                        total += bytesRead;
 
                         int progress = (int) (total * 100 / fileLength);
                         runOnUiThread(() -> pb.setProgress(progress));
                     }
 
-                    if(!tempFile.renameTo(tflite))
+                    if (!tempFile.renameTo(tflite))
                         throw new IOException();
                     runOnUiThread(() -> ll.setVisibility(View.GONE));
                 } catch (IOException ignored) {
