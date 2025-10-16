@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_background"
@@ -24,5 +25,33 @@
         android:gravity="center"
         android:text="@string/txtReceive"
         android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txtErrorMessageServer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="16dp"
+        android:padding="24dp"
+        android:text="@string/txtConnectionError"
+        android:textColor="@color/red"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:drawableTopCompat="@drawable/ic_error"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <Button
+        android:id="@+id/btnAnnullaServer"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/btnCancel_dialog"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_weight="1"
+        android:backgroundTint="@android:color/darker_gray"
+        android:textColor="@android:color/black"
+        android:layout_gravity="start"/>
 
 </LinearLayout>

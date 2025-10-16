@@ -39,7 +39,7 @@ import programmazionemobile.esercizi.personalcodex.Helpers.TemplatesHelper.Templ
 public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
-    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }).start();
         }
+
+        //gestione permessi
+        
 
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),

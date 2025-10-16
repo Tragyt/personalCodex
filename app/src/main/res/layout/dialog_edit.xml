@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@android:color/darker_gray"
-            android:text="@string/btnCancle_dialog"
+            android:text="@string/btnCancel_dialog"
             android:textColor="@android:color/black" />
 
         <Button

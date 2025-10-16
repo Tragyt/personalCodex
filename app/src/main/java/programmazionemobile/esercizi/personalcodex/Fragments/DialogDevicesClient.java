@@ -4,10 +4,13 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +50,9 @@ public class DialogDevicesClient extends DialogFragment {
         rcv.setLayoutManager(new LinearLayoutManager(requireContext()));
         rcv.setAdapter(adapter);
 
+        //cancel button
+        view.findViewById(R.id.btnAnnullaClient).setOnClickListener(v -> this.dismiss());
+
         //setup IntentFilter
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -74,11 +80,13 @@ public class DialogDevicesClient extends DialogFragment {
             @Override
             public void onSuccess() {
                 Log.i("WIFIDIRECT", "Client Discover Start");
+                view.findViewById(R.id.txtErrorMessageClient).setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(int reason) {
                 Log.e("WIFIDIRECT","Client Discover failed " + reason);
+                view.findViewById(R.id.txtErrorMessageClient).setVisibility(View.VISIBLE);
             }
         });
 

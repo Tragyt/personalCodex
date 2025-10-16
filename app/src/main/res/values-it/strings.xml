@@ -28,10 +28,11 @@
     <string name="btnEditDescription_description">abilita modifica descrizione</string>
     <string name="btnAddLink_description">aggiungi collegamento</string>
     <string name="btnEditBond_description">modifica collegamento</string>
+    <string name="icError_description">errore</string>
 
     <string name="editTitle_dialog">modifica titolo</string>
     <string name="btnConfirm_dialog">Conferma</string>
-    <string name="btnCancle_dialog">Annulla</string>
+    <string name="btnCancel_dialog">Annulla</string>
     <string name="btnSelectImg_dialog">Seleziona dalla Galleria</string>
     <string name="btnResetImg_dialog">Ripristina Immagine</string>
 
@@ -45,6 +46,7 @@
     <string name="txtNoResults">Nessun Risultato</string>
     <string name="txtDownload">Download in corso… aspettare qualche minuto</string>
     <string name="txtReceive">Aspettando connessione…</string>
+    <string name="txtConnectionError">Errore di connessione, assicurati che il Wifi sia acceso</string>
 
     <string name="hintEntityDescription">Inserire descrizione</string>
 </resources>

@@ -41,6 +41,9 @@ public class DialogDevicesServer extends DialogFragment {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
+        //cancel button
+        view.findViewById(R.id.btnAnnullaServer).setOnClickListener(v -> this.dismiss());
+
         //setup wifidirect classes
         Context context = requireContext();
         WifiP2pManager manager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -50,12 +53,16 @@ public class DialogDevicesServer extends DialogFragment {
         manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-
+                view.findViewById(R.id.txtErrorMessageServer).setVisibility(View.GONE);
+                view.findViewById(R.id.pbpReceive).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.txtReceive).setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onFailure(int reason) {
-
+                view.findViewById(R.id.txtErrorMessageServer).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.pbpReceive).setVisibility(View.GONE);
+                view.findViewById(R.id.txtReceive).setVisibility(View.GONE);
             }
         });
 
