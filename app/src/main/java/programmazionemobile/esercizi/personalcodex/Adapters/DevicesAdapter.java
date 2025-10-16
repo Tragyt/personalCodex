@@ -1,5 +1,6 @@
 package programmazionemobile.esercizi.personalcodex.Adapters;
 
+import android.annotation.SuppressLint;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +17,16 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHolder> {
 
-    private final ArrayList<WifiP2pDevice> devices;
+    private ArrayList<WifiP2pDevice> devices;
 
     public DevicesAdapter(ArrayList<WifiP2pDevice> devices) {
         this.devices = devices;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(ArrayList<WifiP2pDevice> lst){
+        devices = lst;
+        notifyDataSetChanged();
     }
 
     @NonNull

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import programmazionemobile.esercizi.personalcodex.CampaignActivity;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesClient;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesServer;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 
@@ -25,11 +28,13 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
     private final ArrayList<FD01_CAMPAIGNS> dataSet;
     private final CampaignsAccess campaignsAccess;
     private final ActivityResultLauncher<Intent> activityResultLauncher;
+    private final FragmentManager fragmentManager;
 
-    public CampaignsAdapter(ArrayList<FD01_CAMPAIGNS> data, CampaignsAccess campaignsAccess, ActivityResultLauncher<Intent> activityResultLauncher) {
+    public CampaignsAdapter(ArrayList<FD01_CAMPAIGNS> data, CampaignsAccess campaignsAccess, ActivityResultLauncher<Intent> activityResultLauncher, FragmentManager fragmentManager) {
         dataSet = data;
         this.campaignsAccess = campaignsAccess;
         this.activityResultLauncher = activityResultLauncher;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -58,6 +63,10 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
                     campaignsAccess.delete(campaign.ID);
                     dataSet.remove(campaign);
                     notifyItemRemoved(position);
+                }
+                else if(item==R.id.optShare){
+                    DialogDevicesClient clientDialog = new DialogDevicesClient();
+                    clientDialog.show(fragmentManager,"clientDialog");
                 }
                 return false;
             });

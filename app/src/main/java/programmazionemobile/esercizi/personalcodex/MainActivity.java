@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,11 +33,13 @@ import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.Campaign
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesServer;
 import programmazionemobile.esercizi.personalcodex.Helpers.TemplatesHelper.TemplatesRoles;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //scarica modello se non presente
+        Boolean debug = true;
         File tflite = new File(getFilesDir(), "gemma3-1b-it-int4.task");
-        if (!tflite.exists()) {
+        if (!tflite.exists() && !debug) {
             File tempFile = new File(getFilesDir(), "gemma3-1b-it-int4.task.tmp");
             LinearLayout ll = findViewById(R.id.llDownload);
             ll.setVisibility(View.VISIBLE);
@@ -103,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
                     i.putExtra("Role", TemplatesRoles.NEW_CAMPAIGN);
                     activityResultLauncher.launch(i);
                     return true;
+                } else if (item == R.id.itmReceive) {
+                    DialogDevicesServer serverDialog = new DialogDevicesServer();
+                    serverDialog.show(fragmentManager, "serverDialog");
                 }
                 return false;
             });
@@ -136,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         CampaignsDAO dao = db.campaignsDAO();
         CampaignsAccess access = new CampaignsAccess(dao);
         ArrayList<FD01_CAMPAIGNS> array = access.getAll();
-        CampaignsAdapter adapter = new CampaignsAdapter(array, access, activityResultLauncher);
+        CampaignsAdapter adapter = new CampaignsAdapter(array, access, activityResultLauncher, fragmentManager);
         RecyclerView recyclerView = findViewById(R.id.rcvCampaigns);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

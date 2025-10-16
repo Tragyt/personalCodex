@@ -44,6 +44,7 @@
     <string name="txtSearch">Cerca…</string>
     <string name="txtNoResults">Nessun Risultato</string>
     <string name="txtDownload">Download in corso… aspettare qualche minuto</string>
+    <string name="txtReceive">Aspettando connessione…</string>
 
     <string name="hintEntityDescription">Inserire descrizione</string>
 </resources>
