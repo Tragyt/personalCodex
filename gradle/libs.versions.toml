@@ -24,6 +24,8 @@ recyclerview = "1.4.0"
 tasksVisionImageGenerator = "0.20230731"
 
 [libraries]
+androidx-activity = { module = "androidx.activity:activity" }
+androidx-fragment = { module = "androidx.fragment:fragment" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

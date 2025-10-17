@@ -90,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
             }).start();
         }
 
-        //gestione permessi
-        
-
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> CaricaCampaigns()
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     activityResultLauncher.launch(i);
                     return true;
                 } else if (item == R.id.itmReceive) {
-                    DialogDevicesServer serverDialog = new DialogDevicesServer();
+                    DialogDevicesServer serverDialog = new DialogDevicesServer(this);
                     serverDialog.show(fragmentManager, "serverDialog");
                 }
                 return false;

@@ -47,6 +47,8 @@
     <string name="txtDownload">Download in corso… aspettare qualche minuto</string>
     <string name="txtReceive">Aspettando connessione…</string>
     <string name="txtConnectionError">Errore di connessione, assicurati che il Wifi sia acceso</string>
+    <string name="txtPermissionsWifi">Pernmesso necessario per scambio dati con altri dispositivi</string>
+    <string name="txtPermissionsTitle">Permesso necessario</string>
 
     <string name="hintEntityDescription">Inserire descrizione</string>
 </resources>

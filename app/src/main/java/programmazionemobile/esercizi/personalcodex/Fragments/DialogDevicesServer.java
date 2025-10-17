@@ -1,6 +1,7 @@
 package programmazionemobile.esercizi.personalcodex.Fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -8,10 +9,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -19,12 +23,18 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
+import programmazionemobile.esercizi.personalcodex.Helpers.PermissionsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.WifiDirectBroadcastReceiver;
 import programmazionemobile.esercizi.personalcodex.R;
 
 public class DialogDevicesServer extends DialogFragment {
     private IntentFilter intentFilter;
     private WifiDirectBroadcastReceiver receiver;
+    private final Activity activity;
+
+    public DialogDevicesServer(Activity activity) {
+        this.activity = activity;
+    }
 
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
     @Override
@@ -45,10 +55,19 @@ public class DialogDevicesServer extends DialogFragment {
         view.findViewById(R.id.btnAnnullaServer).setOnClickListener(v -> this.dismiss());
 
         //setup wifidirect classes
-        Context context = requireContext();
-        WifiP2pManager manager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
-        WifiP2pManager.Channel channel = manager.initialize(context, context.getMainLooper(), null);
+        WifiP2pManager manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
+        WifiP2pManager.Channel channel = manager.initialize(activity, activity.getMainLooper(), null);
         receiver = new WifiDirectBroadcastReceiver(null, manager, channel);
+
+         ActivityResultLauncher<String> launcher =
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                    if (isGranted) {
+                        Log.d("SERVER","Permission granted");
+                    } else {
+                        Log.d("SERVER","Permission not granted");
+                    }
+                });
+        PermissionsHelper.ManageWifiDirectPermissions(activity, launcher);
 
         manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override

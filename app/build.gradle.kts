@@ -47,6 +47,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
 
     implementation("com.google.mediapipe:tasks-genai:0.10.29")
 
