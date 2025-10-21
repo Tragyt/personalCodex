@@ -45,9 +45,10 @@
     <string name="txtNoResults">No Results found</string>
     <string name="txtDownload">Download… wait 1 or 2 minutes</string>
     <string name="txtReceive">Waiting for connection…</string>
+    <string name="txtSend">Searching devices…</string>
     <string name="txtConnectionError">Connection error, please make sure your Wi-Fi is on</string>
-    <string name="txtPermissionsWifi">Permission is required for exchanging data with other devices</string>
-    <string name="txtPermissionsTitle">Permission required</string>
+    <string name="txtPermissionsWifi">Permissions are required for exchanging data with other devices</string>
+    <string name="txtPermissionsTitle">Permissions required</string>
 
     <string name="hintEntityDescription">Insert description</string>
 </resources>

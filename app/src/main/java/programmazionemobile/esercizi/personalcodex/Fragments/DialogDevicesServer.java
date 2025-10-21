@@ -59,16 +59,6 @@ public class DialogDevicesServer extends DialogFragment {
         WifiP2pManager.Channel channel = manager.initialize(activity, activity.getMainLooper(), null);
         receiver = new WifiDirectBroadcastReceiver(null, manager, channel);
 
-         ActivityResultLauncher<String> launcher =
-                registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                    if (isGranted) {
-                        Log.d("SERVER","Permission granted");
-                    } else {
-                        Log.d("SERVER","Permission not granted");
-                    }
-                });
-        PermissionsHelper.ManageWifiDirectPermissions(activity, launcher);
-
         manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {

@@ -1,6 +1,7 @@
 package programmazionemobile.esercizi.personalcodex.Fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -16,7 +17,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -29,6 +34,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.DevicesAdapter;
+import programmazionemobile.esercizi.personalcodex.Helpers.PermissionsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.WifiDirectBroadcastReceiver;
 import programmazionemobile.esercizi.personalcodex.R;
 
@@ -36,7 +42,11 @@ public class DialogDevicesClient extends DialogFragment {
     private IntentFilter intentFilter;
     private WifiDirectBroadcastReceiver receiver;
     private final ArrayList<WifiP2pDevice> devices = new ArrayList<>();
-    private DevicesAdapter adapter;
+    private final Activity activity;
+
+    public DialogDevicesClient(Activity activity) {
+        this.activity = activity;
+    }
 
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
     @Override
@@ -45,10 +55,8 @@ public class DialogDevicesClient extends DialogFragment {
 
         //setup UI
         View view = inflater.inflate(R.layout.dialog_devices_client, container, false);
-        RecyclerView rcv = view.findViewById(R.id.rcvDevices);
-        adapter = new DevicesAdapter(devices);
-        rcv.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rcv.setAdapter(adapter);
+        ProgressBar pb = view.findViewById(R.id.pbpSend);
+        TextView txt = view.findViewById(R.id.txtSend);
 
         //cancel button
         view.findViewById(R.id.btnAnnullaClient).setOnClickListener(v -> this.dismiss());
@@ -61,17 +69,32 @@ public class DialogDevicesClient extends DialogFragment {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
         //setup wifidirect classes
-        Context context = requireContext();
-        WifiP2pManager manager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
-        WifiP2pManager.Channel channel = manager.initialize(context, context.getMainLooper(), null);
+        WifiP2pManager manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
+        WifiP2pManager.Channel channel = manager.initialize(activity, activity.getMainLooper(), null);
+
+        //set data
+        RecyclerView rcv = view.findViewById(R.id.rcvDevices);
+        DevicesAdapter adapter = new DevicesAdapter(devices, manager, channel, activity);
+        rcv.setLayoutManager(new LinearLayoutManager(activity));
+        rcv.setAdapter(adapter);
 
         //listener chiamato da broadcastreceiver quando cambiano i peers
         WifiP2pManager.PeerListListener peerListListener = peers -> {
+            Log.i("WIFIDIRECT", "PEERS Changed");
             Collection<WifiP2pDevice> peerList = peers.getDeviceList();
             if (!peerList.equals(devices)) {
+                if (peerList.isEmpty()) {
+                    rcv.setVisibility(View.GONE);
+                    pb.setVisibility(View.VISIBLE);
+                    txt.setVisibility(View.VISIBLE);
+                } else {
+                    rcv.setVisibility(View.VISIBLE);
+                    pb.setVisibility(View.GONE);
+                    txt.setVisibility(View.GONE);
+                }
                 devices.clear();
                 devices.addAll(peerList);
-                adapter.updateData(devices);
+                adapter.updateData(new ArrayList<>(peerList));
             }
         };
         receiver = new WifiDirectBroadcastReceiver(peerListListener, manager, channel);
@@ -85,8 +108,11 @@ public class DialogDevicesClient extends DialogFragment {
 
             @Override
             public void onFailure(int reason) {
-                Log.e("WIFIDIRECT","Client Discover failed " + reason);
+                Log.e("WIFIDIRECT", "Client Discover failed " + reason);
                 view.findViewById(R.id.txtErrorMessageClient).setVisibility(View.VISIBLE);
+                rcv.setVisibility(View.GONE);
+                pb.setVisibility(View.GONE);
+                txt.setVisibility(View.GONE);
             }
         });
 

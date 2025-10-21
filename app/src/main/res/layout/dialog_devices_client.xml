@@ -8,6 +8,19 @@
     android:orientation="vertical"
     android:padding="24dp">
 
+    <ProgressBar
+        android:id="@+id/pbpSend"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/yellow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/txtSend" />
+
     <Button
         android:id="@+id/btnAnnullaClient"
         android:layout_width="wrap_content"
@@ -22,12 +35,24 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvDevices"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/btnAnnullaClient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/txtSend"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnAnnullaClient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/txtErrorMessageClient"

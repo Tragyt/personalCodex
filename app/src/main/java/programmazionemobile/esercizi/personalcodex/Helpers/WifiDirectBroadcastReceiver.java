@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
 
@@ -26,8 +27,11 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver {
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
 
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-            if (manager != null && peerListListener != null)
+            if (manager != null && peerListListener != null){
+                Log.i("WIFIDIRECT", "PEERS CHANGED");
                 manager.requestPeers(channel, peerListListener);
+            }
+
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {

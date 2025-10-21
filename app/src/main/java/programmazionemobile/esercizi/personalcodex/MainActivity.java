@@ -1,7 +1,8 @@
 package programmazionemobile.esercizi.personalcodex;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -34,12 +35,14 @@ import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesServer;
+import programmazionemobile.esercizi.personalcodex.Helpers.PermissionsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.TemplatesHelper.TemplatesRoles;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
+    private ActivityResultLauncher<String[]> shareLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +98,17 @@ public class MainActivity extends AppCompatActivity {
                 result -> CaricaCampaigns()
         );
 
-        Context context = this;
+        Activity context = this;
         ImageButton btnNewCampaign = findViewById(R.id.btnNewCampaign);
+        shareLauncher =
+                registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                    boolean allGranted = result.values().stream().allMatch(granted -> granted);
+                    if (allGranted) {
+                        DialogDevicesServer serverDialog = new DialogDevicesServer(this);
+                        serverDialog.show(fragmentManager, "serverDialog");
+                    } else
+                        PermissionsHelper.PermissionsDenied(this);
+                });
         btnNewCampaign.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(this, view);
             popupMenu.getMenuInflater().inflate(R.menu.new_element, popupMenu.getMenu());
@@ -108,8 +120,11 @@ public class MainActivity extends AppCompatActivity {
                     activityResultLauncher.launch(i);
                     return true;
                 } else if (item == R.id.itmReceive) {
-                    DialogDevicesServer serverDialog = new DialogDevicesServer(this);
-                    serverDialog.show(fragmentManager, "serverDialog");
+                    Runnable runnable = () -> {
+                        DialogDevicesServer serverDialog = new DialogDevicesServer(context);
+                        serverDialog.show(fragmentManager, "serverDialog");
+                    };
+                    PermissionsHelper.WifiDirectPermissions(this, shareLauncher, runnable);
                 }
                 return false;
             });
@@ -143,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         CampaignsDAO dao = db.campaignsDAO();
         CampaignsAccess access = new CampaignsAccess(dao);
         ArrayList<FD01_CAMPAIGNS> array = access.getAll();
-        CampaignsAdapter adapter = new CampaignsAdapter(array, access, activityResultLauncher, fragmentManager);
+        CampaignsAdapter adapter = new CampaignsAdapter(array, access, activityResultLauncher, fragmentManager, this, shareLauncher);
         RecyclerView recyclerView = findViewById(R.id.rcvCampaigns);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

@@ -7,3 +7,4 @@ extra:
 
 fine:
     -   fare un giro con l'app in orizzontale
+    -   togliere la roba di debug nella main activity
