@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -22,24 +23,18 @@ public class PermissionsHelper {
 
     public static void WifiDirectPermissions(Activity activity, ActivityResultLauncher<String[]> launcher, Runnable runnable) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED)
                 permissionsToRequest.add(Manifest.permission.NEARBY_WIFI_DEVICES);
         }
-            else{
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION);
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                permissionsToRequest.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-        }
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (permissionsToRequest.isEmpty()) {
             runnable.run();
             return;
         }
-
-        boolean shouldShowRationale = permissionsToRequest.stream().anyMatch(perm -> ActivityCompat.shouldShowRequestPermissionRationale(activity, perm));
-        if (shouldShowRationale)
+        if (permissionsToRequest.stream().anyMatch(perm -> ActivityCompat.shouldShowRequestPermissionRationale(activity, perm)))
             new AlertDialog.Builder(activity)
                     .setTitle(R.string.txtPermissionsTitle)
                     .setMessage(R.string.txtPermissionsWifi)
@@ -50,24 +45,6 @@ public class PermissionsHelper {
                     .show();
         else
             launcher.launch(permissionsToRequest.toArray(new String[0]));
-
-
-//        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.NEARBY_WIFI_DEVICES) == PackageManager.PERMISSION_GRANTED)
-//            runnable.run();
-//        else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.NEARBY_WIFI_DEVICES)) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-//            builder.setMessage(R.string.txtPermissionsWifi);
-//            builder.setTitle(R.string.txtPermissionsTitle)
-//                    .setCancelable(false)
-//                    .setPositiveButton(R.string.btnConfirm_dialog, (dialog, which) -> {
-//                        launcher.launch(Manifest.permission.NEARBY_WIFI_DEVICES);
-//                    });
-//            builder.setNegativeButton(R.string.btnCancel_dialog, ((dialog, which) -> {
-//            }));
-//            builder.show();
-//        } else {
-//            launcher.launch(Manifest.permission.NEARBY_WIFI_DEVICES);
-//        }
     }
 
     public static void PermissionsDenied(Context context) {

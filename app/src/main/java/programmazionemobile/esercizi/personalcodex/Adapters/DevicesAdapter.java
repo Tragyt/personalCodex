@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,12 +42,8 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 
     @SuppressLint("NotifyDataSetChanged")
     public void updateData(ArrayList<WifiP2pDevice> lst){
-        Log.d("ADAPTER", "updateData chiamato con " + lst.size() + " elementi");
-        for (WifiP2pDevice d : lst) Log.d("ADAPTER", " - " + d.deviceName);
-
         devices.clear();
         devices.addAll(lst);
-        Log.d("ADAPTER", "Lista interna aggiornata: " + devices.size() + " elementi");
         notifyDataSetChanged();
     }
 
@@ -57,6 +54,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
         return new DevicesAdapter.ViewHolder(view);
     }
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         WifiP2pDevice device = devices.get(position);
@@ -68,17 +66,22 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
             WifiP2pConfig config = new WifiP2pConfig();
             config.deviceAddress = device.deviceAddress;
 
-//            manager.connect(channel, config, new WifiP2pManager.ActionListener() {
-//                @Override
-//                public void onSuccess() {
-//
-//                }
-//
-//                @Override
-//                public void onFailure(int reason) {
-//
-//                }
-//            });
+            manager.connect(channel, config, new WifiP2pManager.ActionListener() {
+                @Override
+                public void onSuccess() {
+                    Log.d("WIFIDIRECT","successo");
+                }
+
+                @Override
+                public void onFailure(int reason) {
+                    new androidx.appcompat.app.AlertDialog.Builder(activity)
+                            .setTitle(R.string.icError_description)
+                            .setMessage(R.string.txtConnectionError)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                            .show();
+                }
+            });
         });
     }
 

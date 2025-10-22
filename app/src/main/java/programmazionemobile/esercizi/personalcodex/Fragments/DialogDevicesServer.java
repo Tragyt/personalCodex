@@ -14,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -23,7 +21,6 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
-import programmazionemobile.esercizi.personalcodex.Helpers.PermissionsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.WifiDirectBroadcastReceiver;
 import programmazionemobile.esercizi.personalcodex.R;
 
@@ -54,10 +51,16 @@ public class DialogDevicesServer extends DialogFragment {
         //cancel button
         view.findViewById(R.id.btnAnnullaServer).setOnClickListener(v -> this.dismiss());
 
+        WifiP2pManager.ConnectionInfoListener connectionInfoListener = info -> {
+            if (info.groupFormed) {
+                Log.d("WIFIDIRECT", "Connessione server riuscita");
+            }
+        };
+
         //setup wifidirect classes
         WifiP2pManager manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
         WifiP2pManager.Channel channel = manager.initialize(activity, activity.getMainLooper(), null);
-        receiver = new WifiDirectBroadcastReceiver(null, manager, channel);
+        receiver = new WifiDirectBroadcastReceiver(null, connectionInfoListener, manager, channel);
 
         manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override

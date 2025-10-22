@@ -16,6 +16,9 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import programmazionemobile.esercizi.personalcodex.CampaignActivity;
@@ -72,7 +75,16 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
                     notifyItemRemoved(position);
                 } else if (item == R.id.optShare) {
                     Runnable runnable = () -> {
-                        DialogDevicesClient clientDialog = new DialogDevicesClient(activity);
+                        //trasformo la campagna in bytes (creare helper)
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+                            oos.writeObject(campaign);
+                            oos.flush();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        DialogDevicesClient clientDialog = new DialogDevicesClient(activity, bos.toByteArray());
                         clientDialog.show(fragmentManager, "clientDialog");
                     };
                     PermissionsHelper.WifiDirectPermissions(activity, launcher, runnable);
