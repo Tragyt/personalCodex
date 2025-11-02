@@ -19,8 +19,17 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Objects;
 
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Helpers.WifiDirectBroadcastReceiver;
 import programmazionemobile.esercizi.personalcodex.R;
 
@@ -53,7 +62,29 @@ public class DialogDevicesServer extends DialogFragment {
 
         WifiP2pManager.ConnectionInfoListener connectionInfoListener = info -> {
             if (info.groupFormed) {
-                Log.d("WIFIDIRECT", "Connessione server riuscita");
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try (ServerSocket serverSocket = new ServerSocket(8888)) {
+                            Socket socket = serverSocket.accept();
+                            InputStream stream = socket.getInputStream();
+
+                            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                            byte[] data = new byte[1024];
+                            int bytes;
+                            while ((bytes = stream.read(data)) != -1)
+                                buffer.write(data, 0, bytes);
+
+                            byte[] received = buffer.toByteArray();
+                            ByteArrayInputStream bais = new ByteArrayInputStream(received);
+                            ObjectInputStream ois = new ObjectInputStream(bais);
+                            FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) ois.readObject();
+
+                        } catch (IOException | ClassNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                };
             }
         };
 

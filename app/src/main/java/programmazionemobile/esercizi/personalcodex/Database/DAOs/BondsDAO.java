@@ -22,4 +22,5 @@ public interface BondsDAO {
 
     @Query("SELECT * FROM FD04_BONDS WHERE FD04_ENTITY2_FD03 = :idEntity OR FD04_ENTITY1_FD03 = :idEntity")
     List<FD04_BONDS> getAll(long idEntity);
+
 }

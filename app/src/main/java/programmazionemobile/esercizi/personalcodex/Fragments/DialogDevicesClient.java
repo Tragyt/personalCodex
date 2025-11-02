@@ -28,8 +28,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -103,14 +103,16 @@ public class DialogDevicesClient extends DialogFragment {
 
         WifiP2pManager.ConnectionInfoListener connectionInfoListener = info -> {
             if (info.groupFormed) {
-                Log.d("WIFIDIRECT", "Connessione client riuscita");
                 new Thread(){
                     @Override
                     public void run() {
-                        try (ServerSocket serverSocket = new ServerSocket(8888)) {
-                            Socket socket = serverSocket.accept();
-                            OutputStream outputStream = socket.getOutputStream();
-                            outputStream.write(data);
+                            String address = info.groupOwnerAddress.getHostAddress();
+                            Socket socket = new Socket();
+                        try {
+                            socket.connect(new InetSocketAddress(address, 8888), 500);
+                            OutputStream stream = socket.getOutputStream();
+                            stream.write(data);
+                            socket.close();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
