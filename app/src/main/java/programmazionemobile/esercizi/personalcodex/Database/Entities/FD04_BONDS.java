@@ -9,6 +9,8 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 
+import java.io.Serializable;
+
 @Entity(primaryKeys = {"FD04_ENTITY1_FD03", "FD04_ENTITY2_FD03"},
         foreignKeys = {
                 @ForeignKey(entity = FD03_ENTITIES.class, parentColumns = "ID",
@@ -16,7 +18,7 @@ import androidx.room.Index;
                 @ForeignKey(entity = FD03_ENTITIES.class, parentColumns = "ID",
                         childColumns = "FD04_ENTITY2_FD03", onDelete = ForeignKey.CASCADE)},
         indices = @Index("FD04_ENTITY2_FD03"))
-public class FD04_BONDS implements Parcelable{
+public class FD04_BONDS implements Parcelable, Serializable {
     @ColumnInfo(name = "FD04_ENTITY1_FD03")
     public long FD04_ENTITY1_FD03;
 

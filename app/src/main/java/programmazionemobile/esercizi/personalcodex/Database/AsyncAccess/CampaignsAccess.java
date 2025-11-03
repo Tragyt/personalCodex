@@ -9,6 +9,9 @@ import java.util.concurrent.FutureTask;
 
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD04_BONDS;
 
 public class CampaignsAccess {
     private final CampaignsDAO dao;
@@ -22,6 +25,48 @@ public class CampaignsAccess {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
         ArrayList<FD01_CAMPAIGNS> ret;
+        try {
+            ret = new ArrayList<>(task.get());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
+    }
+
+    public ArrayList<FD02_CAMPAIGNS_SECTIONS> getAllSections(long idCampaign){
+        FutureTask<List<FD02_CAMPAIGNS_SECTIONS>> task = new FutureTask<>(() -> dao.getAllSections(idCampaign));
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+        ArrayList<FD02_CAMPAIGNS_SECTIONS> ret;
+        try {
+            ret = new ArrayList<>(task.get());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
+    }
+
+    public ArrayList<FD03_ENTITIES> getAllEntities(long idCampaign){
+        FutureTask<List<FD03_ENTITIES>> task = new FutureTask<>(() -> dao.getAllEntities(idCampaign));
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+        ArrayList<FD03_ENTITIES> ret;
+        try {
+            ret = new ArrayList<>(task.get());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
+    }
+
+    public ArrayList<FD04_BONDS> getAllBonds(long idCampaign){
+        FutureTask<List<FD04_BONDS>> task = new FutureTask<>(() -> dao.getAllBonds(idCampaign));
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+        ArrayList<FD04_BONDS> ret;
         try {
             ret = new ArrayList<>(task.get());
         } catch (ExecutionException | InterruptedException e) {

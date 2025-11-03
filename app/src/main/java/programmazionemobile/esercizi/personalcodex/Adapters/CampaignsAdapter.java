@@ -3,7 +3,6 @@ package programmazionemobile.esercizi.personalcodex.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import programmazionemobile.esercizi.personalcodex.CampaignActivity;
@@ -27,6 +24,7 @@ import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAI
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesClient;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.PermissionsHelper;
+import programmazionemobile.esercizi.personalcodex.Helpers.SendReceiveHelper;
 import programmazionemobile.esercizi.personalcodex.R;
 
 public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.ViewHolder> {
@@ -75,17 +73,12 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
                     notifyItemRemoved(position);
                 } else if (item == R.id.optShare) {
                     Runnable runnable = () -> {
-                        //trasformo la campagna in bytes (creare helper)
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-                            oos.writeObject(campaign);
-                            oos.flush();
+                        try {
+                            DialogDevicesClient clientDialog = new DialogDevicesClient(activity, SendReceiveHelper.CampaingPayload(campaign.ID, campaignsAccess));
+                            clientDialog.show(fragmentManager, "clientDialog");
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-
-                        DialogDevicesClient clientDialog = new DialogDevicesClient(activity, bos.toByteArray());
-                        clientDialog.show(fragmentManager, "clientDialog");
                     };
                     PermissionsHelper.WifiDirectPermissions(activity, launcher, runnable);
                 }

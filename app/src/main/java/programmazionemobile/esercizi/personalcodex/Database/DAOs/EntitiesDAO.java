@@ -7,6 +7,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD02_CAMPAIGNS_SECTIONS;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD03_ENTITIES;
 
 

@@ -32,7 +32,7 @@ public class CampaignSectionsAccess {
     }
 
     public long insert(FD02_CAMPAIGNS_SECTIONS section) {
-        FutureTask<Long> task = new FutureTask<>(()-> dao.insert(section));
+        FutureTask<Long> task = new FutureTask<>(() -> dao.insert(section));
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);
@@ -46,7 +46,7 @@ public class CampaignSectionsAccess {
         return ret;
     }
 
-    public void update(FD02_CAMPAIGNS_SECTIONS section){
+    public void update(FD02_CAMPAIGNS_SECTIONS section) {
         FutureTask<?> task = new FutureTask<>(() -> {
             dao.update(section);
             return null;
@@ -56,7 +56,7 @@ public class CampaignSectionsAccess {
         executor.execute(task);
     }
 
-    public void delete(long idSection){
+    public void delete(long idSection) {
         FutureTask<?> task = new FutureTask<>(() -> {
             dao.delete(idSection);
             return null;
@@ -65,8 +65,8 @@ public class CampaignSectionsAccess {
         executor.execute(task);
     }
 
-    public FD02_CAMPAIGNS_SECTIONS get(long id){
-        FutureTask<FD02_CAMPAIGNS_SECTIONS> task = new FutureTask<>(()-> dao.get(id));
+    public FD02_CAMPAIGNS_SECTIONS get(long id) {
+        FutureTask<FD02_CAMPAIGNS_SECTIONS> task = new FutureTask<>(() -> dao.get(id));
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);

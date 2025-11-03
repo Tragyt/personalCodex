@@ -14,13 +14,14 @@ public interface BondsDAO {
     @Insert
     void insert(FD04_BONDS bond);
 
-    @Query("DELETE FROM FD04_BONDS WHERE FD04_ENTITY1_FD03 = :idEntity1 and FD04_ENTITY2_FD03 = :idEntity2")
+    @Query("DELETE FROM FD04_BONDS " +
+            "WHERE FD04_ENTITY1_FD03 = :idEntity1 and FD04_ENTITY2_FD03 = :idEntity2")
     void delete(long idEntity1, long idEntity2);
 
     @Update
     void update(FD04_BONDS bond);
 
-    @Query("SELECT * FROM FD04_BONDS WHERE FD04_ENTITY2_FD03 = :idEntity OR FD04_ENTITY1_FD03 = :idEntity")
+    @Query("SELECT * FROM FD04_BONDS " +
+            "WHERE FD04_ENTITY2_FD03 = :idEntity OR FD04_ENTITY1_FD03 = :idEntity")
     List<FD04_BONDS> getAll(long idEntity);
-
 }

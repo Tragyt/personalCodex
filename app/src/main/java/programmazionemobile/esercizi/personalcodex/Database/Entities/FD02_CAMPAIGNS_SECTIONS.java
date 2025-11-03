@@ -6,10 +6,12 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(foreignKeys = @ForeignKey(entity = FD01_CAMPAIGNS.class, parentColumns = "ID",
         childColumns = "FD02_CAMPAIGN_FD01", onDelete = ForeignKey.CASCADE),
         indices = @Index("FD02_CAMPAIGN_FD01"))
-public class FD02_CAMPAIGNS_SECTIONS {
+public class FD02_CAMPAIGNS_SECTIONS implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     public long ID;
