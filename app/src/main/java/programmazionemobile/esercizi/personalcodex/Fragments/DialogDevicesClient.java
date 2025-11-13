@@ -27,7 +27,11 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -37,6 +41,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.DevicesAdapter;
+import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Helpers.WifiDirectBroadcastReceiver;
 import programmazionemobile.esercizi.personalcodex.R;
 
@@ -103,18 +108,38 @@ public class DialogDevicesClient extends DialogFragment {
 
         WifiP2pManager.ConnectionInfoListener connectionInfoListener = info -> {
             if (info.groupFormed) {
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
-                            String address = info.groupOwnerAddress.getHostAddress();
-                            Socket socket = new Socket();
-                        try {
-                            socket.connect(new InetSocketAddress(address, 8888), 500);
-                            OutputStream stream = socket.getOutputStream();
-                            stream.write(data);
-                            socket.close();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        if (info.isGroupOwner) {
+                            ServerSocket serverSocket = null;
+                            Socket socket = null;
+                            try {
+                                serverSocket = new ServerSocket();
+                                serverSocket.setReuseAddress(true);
+                                serverSocket.bind(new InetSocketAddress(8888));
+                                Log.d("SERVER", "In ascolto su porta 8888... ");
+                                socket = serverSocket.accept();
+                                Log.d("SERVER", "Connessione accettata da " + socket.getInetAddress());
+
+                                OutputStream stream = socket.getOutputStream();
+                                stream.write(data);
+                                stream.flush();
+                                Log.d("SERVER", "Dati inviati con successo");
+                            } catch (IOException e) {
+                                Log.e("ERROR","Socket error");
+                            } finally {
+                                try {
+                                    if (serverSocket != null)
+                                        serverSocket.close();
+                                } catch (IOException ignored) {
+                                }
+                                try {
+                                    if (socket != null)
+                                        socket.close();
+                                } catch (IOException ignored) {
+                                }
+                            }
                         }
                     }
                 }.start();
@@ -155,16 +180,12 @@ public class DialogDevicesClient extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                        ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.NEARBY_WIFI_DEVICES) == PackageManager.PERMISSION_GRANTED)) {
-
+        //ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.NEARBY_WIFI_DEVICES) == PackageManager.PERMISSION_GRANTED) {
             requireContext().registerReceiver(receiver, intentFilter);
         } else {
             Log.e("WIFIDIRECT", "Receiver non registrato: permessi mancanti");
         }
-        requireContext().registerReceiver(receiver, intentFilter);
     }
 
     @Override

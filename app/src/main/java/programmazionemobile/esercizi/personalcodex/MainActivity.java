@@ -2,6 +2,7 @@ package programmazionemobile.esercizi.personalcodex;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -123,7 +124,11 @@ public class MainActivity extends AppCompatActivity {
                         DialogDevicesServer serverDialog = new DialogDevicesServer(context);
                         serverDialog.show(fragmentManager, "serverDialog");
                     };
-                    PermissionsHelper.WifiDirectPermissions(this, shareLauncher, runnable);
+                    try {
+                        PermissionsHelper.WifiDirectPermissions(this, shareLauncher, runnable);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 return false;
             });

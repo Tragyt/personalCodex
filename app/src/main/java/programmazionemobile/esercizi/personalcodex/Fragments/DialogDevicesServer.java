@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Objects;
@@ -65,26 +67,41 @@ public class DialogDevicesServer extends DialogFragment {
                 new Thread() {
                     @Override
                     public void run() {
-                        try (ServerSocket serverSocket = new ServerSocket(8888)) {
-                            Socket socket = serverSocket.accept();
-                            InputStream stream = socket.getInputStream();
+                        if (!info.isGroupOwner) {
+                            String address = info.groupOwnerAddress.getHostAddress();
+                            Log.d("CLIENT", "Connessione a " + info.isGroupOwner);
 
-                            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                            byte[] data = new byte[1024];
-                            int bytes;
-                            while ((bytes = stream.read(data)) != -1)
-                                buffer.write(data, 0, bytes);
+                            Socket socket = null;
+                            try {
+                                socket = new Socket();
+                                socket.connect(new InetSocketAddress(address, 8888), 10000);
+                                Log.d("CLIENT", "Connesso");
 
-                            byte[] received = buffer.toByteArray();
-                            ByteArrayInputStream bais = new ByteArrayInputStream(received);
-                            ObjectInputStream ois = new ObjectInputStream(bais);
-                            FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) ois.readObject();
+                                InputStream stream = socket.getInputStream();
+                                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                                byte[] data = new byte[1024];
+                                int bytes;
+                                while ((bytes = stream.read(data)) != -1)
+                                    buffer.write(data, 0, bytes);
 
-                        } catch (IOException | ClassNotFoundException e) {
-                            throw new RuntimeException(e);
+                                byte[] received = buffer.toByteArray();
+                                ByteArrayInputStream bais = new ByteArrayInputStream(received);
+                                ObjectInputStream ois = new ObjectInputStream(bais);
+                                FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) ois.readObject();
+                                Log.d("CLIENT", "Ricevuto oggetto: " + campaign.ID);
+
+                            } catch (IOException | ClassNotFoundException e) {
+                                Log.e("CLIENT", "socket error");
+                            } finally {
+                                try {
+                                    if (socket != null)
+                                        socket.close();
+                                } catch (IOException ignored) {
+                                }
+                            }
                         }
                     }
-                };
+                }.start();
             }
         };
 
