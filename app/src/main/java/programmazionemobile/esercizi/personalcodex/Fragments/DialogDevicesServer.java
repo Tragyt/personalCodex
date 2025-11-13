@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Objects;
@@ -74,15 +80,22 @@ public class DialogDevicesServer extends DialogFragment {
                 new Thread() {
                     @Override
                     public void run() {
-                        try (ServerSocket serverSocket = new ServerSocket(8888)) {
-                            Socket socket = serverSocket.accept();
-                            InputStream stream = socket.getInputStream();
+                        if (!info.isGroupOwner) {
+                            String address = info.groupOwnerAddress.getHostAddress();
+                            Log.d("CLIENT", "Connessione a " + info.isGroupOwner);
 
-                            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                            byte[] data = new byte[1024];
-                            int bytes;
-                            while ((bytes = stream.read(data)) != -1)
-                                buffer.write(data, 0, bytes);
+                            Socket socket = null;
+                            try {
+                                socket = new Socket();
+                                socket.connect(new InetSocketAddress(address, 8888), 10000);
+                                Log.d("CLIENT", "Connesso");
+
+                                InputStream stream = socket.getInputStream();
+                                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                                byte[] data = new byte[1024];
+                                int bytes;
+                                while ((bytes = stream.read(data)) != -1)
+                                    buffer.write(data, 0, bytes);
 
                             byte[] received = buffer.toByteArray();
                             SendReceiveHelper.ReceiveCampaign(received, campaignsAccess, campaignSectionsAccess,entitiesAccess,bondsAccess);

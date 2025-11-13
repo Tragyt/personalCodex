@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.core.app.ActivityCompat;
@@ -21,15 +23,26 @@ import programmazionemobile.esercizi.personalcodex.R;
 
 public class PermissionsHelper {
 
-    public static void WifiDirectPermissions(Activity activity, ActivityResultLauncher<String[]> launcher, Runnable runnable) {
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED)
-                permissionsToRequest.add(Manifest.permission.NEARBY_WIFI_DEVICES);
-        }
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION);
+    public static void WifiDirectPermissions(Activity activity, ActivityResultLauncher<String[]> launcher, Runnable runnable) throws PackageManager.NameNotFoundException {
 
+//        PackageInfo info = activity.getPackageManager().getPackageInfo(
+//                activity.getPackageName(),
+//                PackageManager.GET_PERMISSIONS
+//        );
+//
+//        if (info.requestedPermissions != null) {
+//            for (String perm : info.requestedPermissions) {
+//                int granted = ContextCompat.checkSelfPermission(activity, perm);
+//                Log.d("PERMISSIONS", perm + " -> " +
+//                        (granted == PackageManager.PERMISSION_GRANTED ? "GRANTED" : "DENIED"));
+//            }
+//        }
+
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED)
+            permissionsToRequest.add(Manifest.permission.NEARBY_WIFI_DEVICES);
+//        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+//            permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionsToRequest.isEmpty()) {
             runnable.run();
             return;

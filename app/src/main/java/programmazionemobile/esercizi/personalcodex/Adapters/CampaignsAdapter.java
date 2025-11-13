@@ -3,6 +3,7 @@ package programmazionemobile.esercizi.personalcodex.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +81,11 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
                             throw new RuntimeException(e);
                         }
                     };
-                    PermissionsHelper.WifiDirectPermissions(activity, launcher, runnable);
+                    try {
+                        PermissionsHelper.WifiDirectPermissions(activity, launcher, runnable);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 return false;
             });
