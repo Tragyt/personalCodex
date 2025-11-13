@@ -50,6 +50,8 @@
     <string name="txtConnectionError">Errore di connessione, assicurati che il Wifi sia acceso</string>
     <string name="txtPermissionsWifi">Permessi necessari per scambio dati con altri dispositivi</string>
     <string name="txtPermissionsTitle">Permessi necessari</string>
+    <string name="txtNoDevices">Nessun dispositivo trovato</string>
+    <string name="txtTransferError">Si è verificato un errore durante il trasferimento</string>
 
     <string name="hintEntityDescription">Inserire descrizione</string>
 </resources>

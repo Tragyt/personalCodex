@@ -5,12 +5,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,40 +19,45 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 
-import programmazionemobile.esercizi.personalcodex.Adapters.DevicesAdapter;
-import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
+import programmazionemobile.esercizi.personalcodex.Helpers.SendReceiveHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.WifiDirectBroadcastReceiver;
 import programmazionemobile.esercizi.personalcodex.R;
 
 public class DialogDevicesClient extends DialogFragment {
     private IntentFilter intentFilter;
     private WifiDirectBroadcastReceiver receiver;
-    private final ArrayList<WifiP2pDevice> devices = new ArrayList<>();
     private final Activity activity;
-    private final byte[] data;
 
-    public DialogDevicesClient(Activity activity, byte[] data) {
+    private final CampaignsAccess campaignsAccess;
+    private final CampaignSectionsAccess campaignSectionsAccess;
+    private final EntitiesAccess entitiesAccess;
+    private final BondsAccess bondsAccess;
+
+    public DialogDevicesClient(Activity activity, CampaignsAccess campaignsAccess, CampaignSectionsAccess campaignSectionsAccess, EntitiesAccess entitiesAccess, BondsAccess bondsAccess) {
         this.activity = activity;
-        this.data = data;
+        this.campaignsAccess = campaignsAccess;
+        this.campaignSectionsAccess = campaignSectionsAccess;
+        this.entitiesAccess = entitiesAccess;
+        this.bondsAccess = bondsAccess;
     }
+
+    View view;
+    TextView txtError;
+    TextView txt;
+    ProgressBar pb;
 
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
     @Override
@@ -63,12 +65,12 @@ public class DialogDevicesClient extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         //setup UI
-        View view = inflater.inflate(R.layout.dialog_devices_client, container, false);
-        ProgressBar pb = view.findViewById(R.id.pbpSend);
-        TextView txt = view.findViewById(R.id.txtSend);
+        view = inflater.inflate(R.layout.dialog_devices_client, container, false);
+        txtError = view.findViewById(R.id.txtErrorMessageServer);
+        pb = view.findViewById(R.id.pbpReceive);
+        txt = view.findViewById(R.id.txtReceive);
 
-        //cancel button
-        view.findViewById(R.id.btnAnnullaClient).setOnClickListener(v -> this.dismiss());
+        txtError.setVisibility(View.GONE);
 
         //setup IntentFilter
         intentFilter = new IntentFilter();
@@ -77,93 +79,90 @@ public class DialogDevicesClient extends DialogFragment {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
+        //cancel button
+        view.findViewById(R.id.btnAnnullaServer).setOnClickListener(v -> this.dismiss());
+
         //setup wifidirect classes
         WifiP2pManager manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
         WifiP2pManager.Channel channel = manager.initialize(activity, activity.getMainLooper(), null);
 
-        //set data
-        RecyclerView rcv = view.findViewById(R.id.rcvDevices);
-        DevicesAdapter adapter = new DevicesAdapter(devices, manager, channel, activity);
-        rcv.setLayoutManager(new LinearLayoutManager(activity));
-        rcv.setAdapter(adapter);
-
-        //listener chiamato da broadcastreceiver quando cambiano i peers
-        WifiP2pManager.PeerListListener peerListListener = peers -> {
-            Collection<WifiP2pDevice> peerList = peers.getDeviceList();
-            if (!peerList.equals(devices)) {
-                if (peerList.isEmpty()) {
-                    rcv.setVisibility(View.GONE);
-                    pb.setVisibility(View.VISIBLE);
-                    txt.setVisibility(View.VISIBLE);
-                } else {
-                    rcv.setVisibility(View.VISIBLE);
-                    pb.setVisibility(View.GONE);
-                    txt.setVisibility(View.GONE);
-                }
-                devices.clear();
-                devices.addAll(peerList);
-                adapter.updateData(new ArrayList<>(peerList));
-            }
-        };
-
+        //callback a connessione instaurata
         WifiP2pManager.ConnectionInfoListener connectionInfoListener = info -> {
             if (info.groupFormed) {
                 new Thread() {
                     @Override
                     public void run() {
-                        if (info.isGroupOwner) {
-                            ServerSocket serverSocket = null;
+                        if (!info.isGroupOwner) {
+                            String address = info.groupOwnerAddress.getHostAddress();
                             Socket socket = null;
-                            try {
-                                serverSocket = new ServerSocket();
-                                serverSocket.setReuseAddress(true);
-                                serverSocket.bind(new InetSocketAddress(8888));
-                                Log.d("SERVER", "In ascolto su porta 8888... ");
-                                socket = serverSocket.accept();
-                                Log.d("SERVER", "Connessione accettata da " + socket.getInetAddress());
 
-                                OutputStream stream = socket.getOutputStream();
-                                stream.write(data);
-                                stream.flush();
-                                Log.d("SERVER", "Dati inviati con successo");
-                            } catch (IOException e) {
-                                Log.e("ERROR","Socket error");
-                            } finally {
-                                try {
-                                    if (serverSocket != null)
-                                        serverSocket.close();
-                                } catch (IOException ignored) {
-                                }
-                                try {
-                                    if (socket != null)
-                                        socket.close();
-                                } catch (IOException ignored) {
-                                }
+                            try {
+                                socket = new Socket();
+                                socket.connect(new InetSocketAddress(address, 8888), 10000);
+
+                                InputStream stream = socket.getInputStream();
+                                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                                byte[] data = new byte[1024];
+                                int bytes;
+                                while ((bytes = stream.read(data)) != -1)
+                                    buffer.write(data, 0, bytes);
+
+                                byte[] received = buffer.toByteArray();
+                                SendReceiveHelper.ReceiveCampaign(received, campaignsAccess, campaignSectionsAccess, entitiesAccess, bondsAccess);
+                            } catch (ClassNotFoundException | IOException e) {
+                                activity.runOnUiThread(() -> {
+                                    txtError.setText(R.string.txtTransferError);
+                                    txtError.setVisibility(View.VISIBLE);
+                                    txt.setVisibility(View.GONE);
+                                    pb.setVisibility(View.GONE);
+                                });
+                                SendReceiveHelper.removeGroup(manager, channel);
                             }
                         }
+                        SendReceiveHelper.removeGroup(manager, channel);
                     }
                 }.start();
             }
         };
 
-        receiver = new WifiDirectBroadcastReceiver(peerListListener, connectionInfoListener, manager, channel);
+        //creazione receiver
+        receiver = new WifiDirectBroadcastReceiver(null, connectionInfoListener, manager, channel);
 
-        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+        manager.stopPeerDiscovery(channel, new WifiP2pManager.ActionListener() {
+            @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
             @Override
             public void onSuccess() {
-                view.findViewById(R.id.txtErrorMessageClient).setVisibility(View.GONE);
+                startDiscovery(manager, channel);
             }
 
+            @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
             @Override
             public void onFailure(int reason) {
-                view.findViewById(R.id.txtErrorMessageClient).setVisibility(View.VISIBLE);
-                rcv.setVisibility(View.GONE);
-                pb.setVisibility(View.GONE);
-                txt.setVisibility(View.GONE);
+                startDiscovery(manager, channel);
             }
         });
 
         return view;
+    }
+
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
+    private void startDiscovery(WifiP2pManager manager, WifiP2pManager.Channel channel) {
+        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                txtError.setVisibility(View.GONE);
+                pb.setVisibility(View.VISIBLE);
+                txt.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                txtError.setText(R.string.txtConnectionError);
+                txtError.setVisibility(View.VISIBLE);
+                pb.setVisibility(View.GONE);
+                txt.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -180,12 +179,7 @@ public class DialogDevicesClient extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        //ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.NEARBY_WIFI_DEVICES) == PackageManager.PERMISSION_GRANTED) {
-            requireContext().registerReceiver(receiver, intentFilter);
-        } else {
-            Log.e("WIFIDIRECT", "Receiver non registrato: permessi mancanti");
-        }
+        requireContext().registerReceiver(receiver, intentFilter);
     }
 
     @Override

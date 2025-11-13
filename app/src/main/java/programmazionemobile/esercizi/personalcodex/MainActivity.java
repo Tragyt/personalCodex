@@ -40,7 +40,7 @@ import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectio
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
-import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesServer;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesClient;
 import programmazionemobile.esercizi.personalcodex.Helpers.PermissionsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.TemplatesHelper.TemplatesRoles;
 
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
                     boolean allGranted = result.values().stream().allMatch(granted -> granted);
                     if (allGranted) {
-                        DialogDevicesServer serverDialog = new DialogDevicesServer(this, campaignsAccess, campaignSectionsAccess, entitiesAccess, bondsAccess);
+                        DialogDevicesClient serverDialog = new DialogDevicesClient(this, campaignsAccess, campaignSectionsAccess, entitiesAccess, bondsAccess);
                         serverDialog.show(fragmentManager, "serverDialog");
                     } else
                         PermissionsHelper.PermissionsDenied(this);
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (item == R.id.itmReceive) {
                     Runnable runnable = () -> {
-                        DialogDevicesServer serverDialog = new DialogDevicesServer(context, campaignsAccess, campaignSectionsAccess, entitiesAccess, bondsAccess);
+                        DialogDevicesClient serverDialog = new DialogDevicesClient(context, campaignsAccess, campaignSectionsAccess, entitiesAccess, bondsAccess);
                         serverDialog.show(fragmentManager, "serverDialog");
                     };
                     try {

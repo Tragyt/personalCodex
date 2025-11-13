@@ -1,5 +1,7 @@
 package programmazionemobile.esercizi.personalcodex.Helpers;
 
+import android.net.wifi.p2p.WifiP2pManager;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -89,6 +91,18 @@ public class SendReceiveHelper {
         FD03_ENTITIES entity = (FD03_ENTITIES) ois.readObject();
         entity.FD03_SECTION_FD02 = idSection;
         entitiesAccess.insert(entity);
+    }
+
+    public static void removeGroup(WifiP2pManager manager, WifiP2pManager.Channel channel){
+        manager.removeGroup(channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+            }
+
+            @Override
+            public void onFailure(int reason) {
+            }
+        });
     }
 
 }

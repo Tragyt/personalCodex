@@ -49,6 +49,8 @@
     <string name="txtConnectionError">Connection error, please make sure your Wi-Fi is on</string>
     <string name="txtPermissionsWifi">Permissions are required for exchanging data with other devices</string>
     <string name="txtPermissionsTitle">Permissions required</string>
+    <string name="txtNoDevices">No devices found</string>
+    <string name="txtTransferError">An error occurred during the transfer</string>
 
     <string name="hintEntityDescription">Insert description</string>
 </resources>

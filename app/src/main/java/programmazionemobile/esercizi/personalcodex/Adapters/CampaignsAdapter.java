@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import programmazionemobile.esercizi.personalcodex.CampaignActivity;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
-import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesClient;
+import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesServer;
 import programmazionemobile.esercizi.personalcodex.Helpers.CampaignsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.PermissionsHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.SendReceiveHelper;
@@ -75,7 +75,7 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
                 } else if (item == R.id.optShare) {
                     Runnable runnable = () -> {
                         try {
-                            DialogDevicesClient clientDialog = new DialogDevicesClient(activity, SendReceiveHelper.CampaingPayload(campaign.ID, campaignsAccess));
+                            DialogDevicesServer clientDialog = new DialogDevicesServer(activity, SendReceiveHelper.CampaingPayload(campaign.ID, campaignsAccess));
                             clientDialog.show(fragmentManager, "clientDialog");
                         } catch (IOException e) {
                             throw new RuntimeException(e);
