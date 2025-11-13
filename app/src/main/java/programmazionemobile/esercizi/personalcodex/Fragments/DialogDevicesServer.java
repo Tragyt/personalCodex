@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +18,18 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.DialogFragment;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Objects;
 
-import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
+import programmazionemobile.esercizi.personalcodex.Helpers.SendReceiveHelper;
 import programmazionemobile.esercizi.personalcodex.Helpers.WifiDirectBroadcastReceiver;
 import programmazionemobile.esercizi.personalcodex.R;
 
@@ -38,8 +38,17 @@ public class DialogDevicesServer extends DialogFragment {
     private WifiDirectBroadcastReceiver receiver;
     private final Activity activity;
 
-    public DialogDevicesServer(Activity activity) {
+    private final CampaignsAccess campaignsAccess;
+    private final CampaignSectionsAccess campaignSectionsAccess;
+    private final EntitiesAccess entitiesAccess;
+    private final BondsAccess bondsAccess;
+
+    public DialogDevicesServer(Activity activity, CampaignsAccess campaignsAccess, CampaignSectionsAccess campaignSectionsAccess, EntitiesAccess entitiesAccess, BondsAccess bondsAccess) {
         this.activity = activity;
+        this.campaignsAccess = campaignsAccess;
+        this.campaignSectionsAccess = campaignSectionsAccess;
+        this.entitiesAccess = entitiesAccess;
+        this.bondsAccess = bondsAccess;
     }
 
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES})
@@ -76,10 +85,7 @@ public class DialogDevicesServer extends DialogFragment {
                                 buffer.write(data, 0, bytes);
 
                             byte[] received = buffer.toByteArray();
-                            ByteArrayInputStream bais = new ByteArrayInputStream(received);
-                            ObjectInputStream ois = new ObjectInputStream(bais);
-                            FD01_CAMPAIGNS campaign = (FD01_CAMPAIGNS) ois.readObject();
-
+                            SendReceiveHelper.ReceiveCampaign(received, campaignsAccess, campaignSectionsAccess,entitiesAccess,bondsAccess);
                         } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }

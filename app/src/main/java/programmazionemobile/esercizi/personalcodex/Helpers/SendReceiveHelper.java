@@ -77,7 +77,7 @@ public class SendReceiveHelper {
             for (FD04_BONDS bond : bonds) {
                 bond.FD04_ENTITY1_FD03 = Optional.ofNullable(old_new_entities.get(bond.FD04_ENTITY1_FD03)).orElse(-1L);
                 bond.FD04_ENTITY2_FD03 = Optional.ofNullable(old_new_entities.get(bond.FD04_ENTITY2_FD03)).orElse(-1L);
-                if(bond.FD04_ENTITY1_FD03>0 && bond.FD04_ENTITY2_FD03>0)
+                if (bond.FD04_ENTITY1_FD03 > 0 && bond.FD04_ENTITY2_FD03 > 0)
                     bondsAccess.insert(bond);
             }
         }

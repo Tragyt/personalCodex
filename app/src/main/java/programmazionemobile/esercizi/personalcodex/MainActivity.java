@@ -29,8 +29,14 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import programmazionemobile.esercizi.personalcodex.Adapters.CampaignsAdapter;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.BondsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignSectionsAccess;
 import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.CampaignsAccess;
+import programmazionemobile.esercizi.personalcodex.Database.AsyncAccess.EntitiesAccess;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.BondsDAO;
 import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsDAO;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.CampaignsSectionsDAO;
+import programmazionemobile.esercizi.personalcodex.Database.DAOs.EntitiesDAO;
 import programmazionemobile.esercizi.personalcodex.Database.Entities.FD01_CAMPAIGNS;
 import programmazionemobile.esercizi.personalcodex.Database.MyDatabase;
 import programmazionemobile.esercizi.personalcodex.Fragments.DialogDevicesServer;
@@ -42,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private ActivityResultLauncher<String[]> shareLauncher;
+
+    private CampaignsAccess campaignsAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +100,16 @@ public class MainActivity extends AppCompatActivity {
             }).start();
         }
 
+        MyDatabase db = MyDatabase.getInstance(this);
+        CampaignsDAO dao = db.campaignsDAO();
+        campaignsAccess = new CampaignsAccess(dao);
+        CampaignsSectionsDAO campaignsSectionsDAO = db.campaignsSectionsDAO();
+        CampaignSectionsAccess campaignSectionsAccess = new CampaignSectionsAccess(campaignsSectionsDAO);
+        EntitiesDAO entitiesDAO = db.entitiesDAO();
+        EntitiesAccess entitiesAccess = new EntitiesAccess(entitiesDAO);
+        BondsDAO bondsDAO = db.bondsDAO();
+        BondsAccess bondsAccess = new BondsAccess(bondsDAO);
+
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> CaricaCampaigns()
@@ -103,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
                     boolean allGranted = result.values().stream().allMatch(granted -> granted);
                     if (allGranted) {
-                        DialogDevicesServer serverDialog = new DialogDevicesServer(this);
+                        DialogDevicesServer serverDialog = new DialogDevicesServer(this, campaignsAccess, campaignSectionsAccess, entitiesAccess, bondsAccess);
                         serverDialog.show(fragmentManager, "serverDialog");
                     } else
                         PermissionsHelper.PermissionsDenied(this);
@@ -120,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (item == R.id.itmReceive) {
                     Runnable runnable = () -> {
-                        DialogDevicesServer serverDialog = new DialogDevicesServer(context);
+                        DialogDevicesServer serverDialog = new DialogDevicesServer(context, campaignsAccess, campaignSectionsAccess, entitiesAccess, bondsAccess);
                         serverDialog.show(fragmentManager, "serverDialog");
                     };
                     PermissionsHelper.WifiDirectPermissions(this, shareLauncher, runnable);
@@ -153,11 +171,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void CaricaCampaigns() {
-        MyDatabase db = MyDatabase.getInstance(this);
-        CampaignsDAO dao = db.campaignsDAO();
-        CampaignsAccess access = new CampaignsAccess(dao);
-        ArrayList<FD01_CAMPAIGNS> array = access.getAll();
-        CampaignsAdapter adapter = new CampaignsAdapter(array, access, activityResultLauncher, fragmentManager, this, shareLauncher);
+        ArrayList<FD01_CAMPAIGNS> array = campaignsAccess.getAll();
+        CampaignsAdapter adapter = new CampaignsAdapter(array, campaignsAccess, activityResultLauncher, fragmentManager, this, shareLauncher);
         RecyclerView recyclerView = findViewById(R.id.rcvCampaigns);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
